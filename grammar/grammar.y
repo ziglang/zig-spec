@@ -115,11 +115,11 @@ TypeExpr <- PrefixTypeOp* ErrorUnionExpr
 ErrorUnionExpr <- SuffixExpr (EXCLAMATIONMARK TypeExpr)?
 
 SuffixExpr
-    <- AsyncPrefix PrimaryTypeExpr SuffixOp* FnCallArgumnets
-     / PrimaryTypeExpr (SuffixOp / FnCallArgumnets)*
+    <- AsyncPrefix PrimaryTypeExpr SuffixOp* FnCallArguments
+     / PrimaryTypeExpr (SuffixOp / FnCallArguments)*
 
 PrimaryTypeExpr
-    <- BUILTININDENTIFIER FnCallArgumnets
+    <- BUILTININDENTIFIER FnCallArguments
      / CHAR_LITERAL
      / ContainerDecl
      / ErrorSetDecl
@@ -298,7 +298,7 @@ SuffixOp
 
 AsyncPrefix <- KEYWORD_async (LARROW PrefixExpr RARROW)?
 
-FnCallArgumnets <- LPAREN ExprList RPAREN
+FnCallArguments <- LPAREN ExprList RPAREN
 
 # Ptr specific
 ArrayTypeStart <- LBRACKET Expr? RBRACKET
