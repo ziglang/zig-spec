@@ -119,7 +119,7 @@ SuffixExpr
      / PrimaryTypeExpr (SuffixOp / FnCallArguments)*
 
 PrimaryTypeExpr
-    <- BUILTININDENTIFIER FnCallArguments
+    <- BUILTINIDENTIFIER FnCallArguments
      / CHAR_LITERAL
      / ContainerDecl
      / ErrorSetDecl
@@ -375,7 +375,7 @@ STRINGLITERAL
 IDENTIFIER
     <- !keyword ("c" !["\\] / [A-Zabd-z_]) [A-Za-z0-9_]* skip
      / "@\"" string_char* "\""                            skip
-BUILTININDENTIFIER <- "@"[A-Za-z_][A-Za-z0-9_]* skip
+BUILTINIDENTIFIER <- "@"[A-Za-z_][A-Za-z0-9_]* skip
 
 
 AMPERSAND            <- '&'      ![=]      skip
