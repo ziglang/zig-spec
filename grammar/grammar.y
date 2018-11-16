@@ -169,11 +169,11 @@ AsmOutput <- COLON AsmOutputList AsmInput?
 
 AsmOutputItem <- LBRACKET IDENTIFIER RBRACKET STRINGLITERAL LPAREN (MINUSRARROW TypeExpr / IDENTIFIER) RPAREN
 
-AsmInput <- COLON AsmInputList AsmCloppers?
+AsmInput <- COLON AsmInputList AsmClobbers?
 
 AsmInputItem <- LBRACKET IDENTIFIER RBRACKET STRINGLITERAL LPAREN Expr RPAREN
 
-AsmCloppers <- COLON StringList
+AsmClobbers <- COLON StringList
 
 # *** Helper grammar ***
 BreakLabel <- COLON IDENTIFIER
