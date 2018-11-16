@@ -115,11 +115,11 @@ TypeExpr <- PrefixTypeOp* ErrorUnionExpr
 ErrorUnionExpr <- SuffixExpr (EXCLAMATIONMARK TypeExpr)?
 
 SuffixExpr
-    <- AsyncPrefix PrimaryTypeExpr SuffixOp* FnCallArgumnets
-     / PrimaryTypeExpr (SuffixOp / FnCallArgumnets)*
+    <- AsyncPrefix PrimaryTypeExpr SuffixOp* FnCallArguments
+     / PrimaryTypeExpr (SuffixOp / FnCallArguments)*
 
 PrimaryTypeExpr
-    <- BUILTININDENTIFIER FnCallArgumnets
+    <- BUILTINIDENTIFIER FnCallArguments
      / CHAR_LITERAL
      / ContainerDecl
      / ErrorSetDecl
@@ -169,11 +169,11 @@ AsmOutput <- COLON AsmOutputList AsmInput?
 
 AsmOutputItem <- LBRACKET IDENTIFIER RBRACKET STRINGLITERAL LPAREN (MINUSRARROW TypeExpr / IDENTIFIER) RPAREN
 
-AsmInput <- COLON AsmInputList AsmCloppers?
+AsmInput <- COLON AsmInputList AsmClobbers?
 
 AsmInputItem <- LBRACKET IDENTIFIER RBRACKET STRINGLITERAL LPAREN Expr RPAREN
 
-AsmCloppers <- COLON StringList
+AsmClobbers <- COLON StringList
 
 # *** Helper grammar ***
 BreakLabel <- COLON IDENTIFIER
@@ -298,7 +298,7 @@ SuffixOp
 
 AsyncPrefix <- KEYWORD_async (LARROW PrefixExpr RARROW)?
 
-FnCallArgumnets <- LPAREN ExprList RPAREN
+FnCallArguments <- LPAREN ExprList RPAREN
 
 # Ptr specific
 ArrayTypeStart <- LBRACKET Expr? RBRACKET
@@ -375,7 +375,7 @@ STRINGLITERAL
 IDENTIFIER
     <- !keyword ("c" !["\\] / [A-Zabd-z_]) [A-Za-z0-9_]* skip
      / "@\"" string_char* "\""                            skip
-BUILTININDENTIFIER <- "@"[A-Za-z_][A-Za-z0-9_]* skip
+BUILTINIDENTIFIER <- "@"[A-Za-z_][A-Za-z0-9_]* skip
 
 
 AMPERSAND            <- '&'      ![=]      skip
