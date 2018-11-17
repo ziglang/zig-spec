@@ -18,9 +18,9 @@ TopLevelDecl
      / (KEYWORD_export / KEYWORD_extern STRINGLITERAL?)? VarDecl
      / KEYWORD_use Expr SEMICOLON
 
-FnProto <- FnCC? KEYWORD_fn IDENTIFIER? LPAREN ParamDeclList RPAREN ByteAlign? Section? EXCLAMATIONMARK? (KEYWORD_var / TypeExpr)
+FnProto <- FnCC? KEYWORD_fn IDENTIFIER? LPAREN ParamDeclList RPAREN ByteAlign? LinkSection? EXCLAMATIONMARK? (KEYWORD_var / TypeExpr)
 
-VarDecl <- (KEYWORD_const / KEYWORD_var) IDENTIFIER (COLON TypeExpr)? ByteAlign? Section? (EQUAL Expr)? SEMICOLON
+VarDecl <- (KEYWORD_const / KEYWORD_var) IDENTIFIER (COLON TypeExpr)? ByteAlign? LinkSection? (EQUAL Expr)? SEMICOLON
 
 ContainerField <- IDENTIFIER (COLON TypeExpr)? (EQUAL Expr)?
 
@@ -184,7 +184,7 @@ FieldInit <- DOT IDENTIFIER EQUAL Expr
 
 WhileContinueExpr <- COLON LPAREN AssignExpr RPAREN
 
-Section <- KEYWORD_section LPAREN Expr RPAREN
+LinkSection <- KEYWORD_linksection LPAREN Expr RPAREN
 
 # Fn specific
 FnCC
@@ -469,7 +469,7 @@ KEYWORD_promise     <- 'promise'     end_of_word
 KEYWORD_pub         <- 'pub'         end_of_word
 KEYWORD_resume      <- 'resume'      end_of_word
 KEYWORD_return      <- 'return'      end_of_word
-KEYWORD_section     <- 'section'     end_of_word
+KEYWORD_linksection <- 'linksection' end_of_word
 KEYWORD_stdcallcc   <- 'stdcallcc'   end_of_word
 KEYWORD_struct      <- 'struct'      end_of_word
 KEYWORD_suspend     <- 'suspend'     end_of_word
@@ -493,7 +493,7 @@ keyword <- KEYWORD_align / KEYWORD_and / KEYWORD_anyerror / KEYWORD_asm
          / KEYWORD_fn / KEYWORD_for / KEYWORD_if / KEYWORD_inline
          / KEYWORD_nakedcc / KEYWORD_noalias / KEYWORD_null / KEYWORD_or
          / KEYWORD_orelse / KEYWORD_packed / KEYWORD_promise / KEYWORD_pub
-         / KEYWORD_resume / KEYWORD_return / KEYWORD_section
+         / KEYWORD_resume / KEYWORD_return / KEYWORD_linksection
          / KEYWORD_stdcallcc / KEYWORD_struct / KEYWORD_suspend
          / KEYWORD_switch / KEYWORD_test / KEYWORD_true / KEYWORD_try
          / KEYWORD_undefined / KEYWORD_union / KEYWORD_unreachable
