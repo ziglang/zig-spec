@@ -10,7 +10,7 @@ The grammar is validated and tested using the
 [`peg` parser generator](http://piumarta.com/software/peg/)
 and any C compiler. Known to work C compilers include:
 
- * todo
+ * GCC >= 7.4.0
 
 Typing `make` in this folder will create a `build` directory containing the
 source files generated from `peg` and two executables, which can both parse Zig

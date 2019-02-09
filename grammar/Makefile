@@ -14,7 +14,7 @@ build/full.c: main.c build/parser.c
 	cat $^ > $@
 
 build/parser: build/full.c
-	gcc -O3 -o $@ $^
+	cc -O3 -o $@ $^
 
 build/parser_debug: build/full.c
-	gcc -O3 -o $@ $^ -DYY_DEBUG
+	cc -O3 -o $@ $^ -DYY_DEBUG

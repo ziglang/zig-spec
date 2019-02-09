@@ -15,7 +15,7 @@ TopLevelComptime <- KEYWORD_comptime BlockExpr
 
 TopLevelDecl
     <- (KEYWORD_export / KEYWORD_extern STRINGLITERAL? / KEYWORD_inline)? FnProto (SEMICOLON / Block)
-     / (KEYWORD_export / KEYWORD_extern STRINGLITERAL?)? VarDecl
+     / (KEYWORD_export / KEYWORD_extern STRINGLITERAL?)? KEYWORD_threadlocal? VarDecl
      / KEYWORD_use Expr SEMICOLON
 
 FnProto <- FnCC? KEYWORD_fn IDENTIFIER? LPAREN ParamDeclList RPAREN ByteAlign? LinkSection? EXCLAMATIONMARK? (KEYWORD_var / TypeExpr)
@@ -475,6 +475,7 @@ KEYWORD_struct      <- 'struct'      end_of_word
 KEYWORD_suspend     <- 'suspend'     end_of_word
 KEYWORD_switch      <- 'switch'      end_of_word
 KEYWORD_test        <- 'test'        end_of_word
+KEYWORD_threadlocal <- 'threadlocal' end_of_word
 KEYWORD_true        <- 'true'        end_of_word
 KEYWORD_try         <- 'try'         end_of_word
 KEYWORD_undefined   <- 'undefined'   end_of_word
@@ -495,6 +496,6 @@ keyword <- KEYWORD_align / KEYWORD_and / KEYWORD_anyerror / KEYWORD_asm
          / KEYWORD_orelse / KEYWORD_packed / KEYWORD_promise / KEYWORD_pub
          / KEYWORD_resume / KEYWORD_return / KEYWORD_linksection
          / KEYWORD_stdcallcc / KEYWORD_struct / KEYWORD_suspend
-         / KEYWORD_switch / KEYWORD_test / KEYWORD_true / KEYWORD_try
+         / KEYWORD_switch / KEYWORD_test / KEYWORD_threadlocal / KEYWORD_true / KEYWORD_try
          / KEYWORD_undefined / KEYWORD_union / KEYWORD_unreachable
          / KEYWORD_use / KEYWORD_var / KEYWORD_volatile / KEYWORD_while
