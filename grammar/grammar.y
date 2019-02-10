@@ -306,7 +306,8 @@ ArrayTypeStart <- LBRACKET Expr? RBRACKET
 PtrTypeStart
     <- ASTERISK
      / ASTERISK2
-     / LBRACKET ASTERISK RBRACKET
+     / PTRUNKNOWN
+     / PTRC
 
 # ContainerDecl specific
 ContainerDeclAuto <- ContainerDeclType LBRACE ContainerMembers RBRACE
@@ -404,7 +405,7 @@ LARROW2              <- '<<'     ![=]      skip
 LARROW2EQUAL         <- '<<='              skip
 LARROWEQUAL          <- '<='               skip
 LBRACE               <- '{'                skip
-LBRACKET             <- '['                skip
+LBRACKET             <- '['      ![*]      skip
 LPAREN               <- '('                skip
 MINUS                <- '-'      ![%=>]    skip
 MINUSEQUAL           <- '-='               skip
@@ -421,6 +422,8 @@ PLUS2                <- '++'               skip
 PLUSEQUAL            <- '+='               skip
 PLUSPERCENT          <- '+%'     ![=]      skip
 PLUSPERCENTEQUAL     <- '+%='              skip
+PTRC                 <- '[*c]'             skip
+PTRUNKNOWN           <- '[*]'              skip
 QUESTIONMARK         <- '?'                skip
 RARROW               <- '>'      ![>=]     skip
 RARROW2              <- '>>'     ![=]      skip
