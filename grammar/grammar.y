@@ -88,12 +88,11 @@ PrimaryExpr
      / KEYWORD_continue BreakLabel?
      / KEYWORD_resume Expr
      / KEYWORD_return Expr?
-     / LabeledExpr
+     / BlockLabel? LoopExpr
+     / Block
      / CurlySuffixExpr
 
 IfExpr <- IfPrefix Expr (KEYWORD_else Payload? Expr)?
-
-LabeledExpr <- BlockLabel? (Block / LoopExpr)
 
 Block <- LBRACE Statement* RBRACE
 
