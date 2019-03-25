@@ -286,8 +286,8 @@ PrefixOp
 PrefixTypeOp
     <- QUESTIONMARK
      / KEYWORD_promise MINUSRARROW
-     / ArrayTypeStart (ByteAlign / KEYWORD_const / KEYWORD_volatile)*
-     / PtrTypeStart (KEYWORD_align LPAREN Expr (COLON INTEGER COLON INTEGER)? RPAREN / KEYWORD_const / KEYWORD_volatile)*
+     / ArrayTypeStart (ByteAlign / KEYWORD_const / KEYWORD_volatile / KEYWORD_allowzero)*
+     / PtrTypeStart (KEYWORD_align LPAREN Expr (COLON INTEGER COLON INTEGER)? RPAREN / KEYWORD_const / KEYWORD_volatile / KEYWORD_allowzero)*
 
 SuffixOp
     <- LBRACKET Expr (DOT2 Expr?)? RBRACKET
@@ -438,6 +438,7 @@ TILDE                <- '~'                skip
 
 end_of_word <- ![a-zA-Z0-9_] skip
 KEYWORD_align       <- 'align'       end_of_word
+KEYWORD_allowzero   <- 'allowzero'   end_of_word
 KEYWORD_and         <- 'and'         end_of_word
 KEYWORD_anyerror    <- 'anyerror'    end_of_word
 KEYWORD_asm         <- 'asm'         end_of_word
@@ -488,7 +489,7 @@ KEYWORD_var         <- 'var'         end_of_word
 KEYWORD_volatile    <- 'volatile'    end_of_word
 KEYWORD_while       <- 'while'       end_of_word
 
-keyword <- KEYWORD_align / KEYWORD_and / KEYWORD_anyerror / KEYWORD_asm
+keyword <- KEYWORD_align / KEYWORD_and / KEYWORD_allowzero / KEYWORD_anyerror / KEYWORD_asm
          / KEYWORD_async / KEYWORD_await / KEYWORD_break / KEYWORD_cancel
          / KEYWORD_catch / KEYWORD_comptime / KEYWORD_const / KEYWORD_continue
          / KEYWORD_defer / KEYWORD_else / KEYWORD_enum / KEYWORD_errdefer
