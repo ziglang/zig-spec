@@ -355,12 +355,8 @@ skip <- ([ \n] / line_comment)*
 
 CHAR_LITERAL <- "'" char_char "'" skip
 FLOAT
-    <- "0b" [01]+  "." [01]+  ([eE] [-+]? [01]+)?  skip
-     / "0o" [0-7]+ "." [0-7]+ ([eE] [-+]? [0-7]+)? skip
-     / "0x" hex+   "." hex+   ([pP] [-+]? hex+)?   skip
+    <- "0x" hex+   "." hex+   ([pP] [-+]? hex+)?   skip
      /      [0-9]+ "." [0-9]+ ([eE] [-+]? [0-9]+)? skip
-     / "0b" [01]+  "."? [eE] [-+]? [01]+  skip
-     / "0o" [0-7]+ "."? [eE] [-+]? [0-7]+ skip
      / "0x" hex+   "."? [pP] [-+]? hex+   skip
      /      [0-9]+ "."? [eE] [-+]? [0-9]+ skip
 INTEGER
