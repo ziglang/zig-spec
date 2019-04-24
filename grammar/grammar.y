@@ -312,7 +312,8 @@ PtrTypeStart
 ContainerDeclAuto <- ContainerDeclType LBRACE ContainerMembers RBRACE
 
 ContainerDeclType
-    <- (KEYWORD_struct / KEYWORD_enum) (LPAREN Expr RPAREN)?
+    <- KEYWORD_struct
+     / KEYWORD_enum (LPAREN Expr RPAREN)?
      / KEYWORD_union (LPAREN (KEYWORD_enum (LPAREN Expr RPAREN)? / Expr) RPAREN)?
 
 # Alignment
