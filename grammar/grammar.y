@@ -121,6 +121,7 @@ PrimaryTypeExpr
     <- BUILTINIDENTIFIER FnCallArguments
      / CHAR_LITERAL
      / ContainerDecl
+     / DOT IDENTIFIER
      / ErrorSetDecl
      / FLOAT
      / FnProto
