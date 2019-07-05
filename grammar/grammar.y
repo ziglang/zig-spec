@@ -340,8 +340,7 @@ eof <- !.
 hex <- [0-9a-fA-F]
 char_escape
     <- "\\x" hex hex
-     / "\\u" hex hex hex hex
-     / "\\U" hex hex hex hex hex hex
+     / "\\u{" hex+ "}"
      / "\\" [nr\\t'"]
 char_char
     <- char_escape
