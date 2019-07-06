@@ -130,7 +130,6 @@ PrimaryTypeExpr
      / IDENTIFIER
      / IfTypeExpr
      / INTEGER
-     / KEYWORD_anyerror
      / KEYWORD_comptime TypeExpr
      / KEYWORD_error DOT IDENTIFIER
      / KEYWORD_false
@@ -438,7 +437,6 @@ end_of_word <- ![a-zA-Z0-9_] skip
 KEYWORD_align       <- 'align'       end_of_word
 KEYWORD_allowzero   <- 'allowzero'   end_of_word
 KEYWORD_and         <- 'and'         end_of_word
-KEYWORD_anyerror    <- 'anyerror'    end_of_word
 KEYWORD_asm         <- 'asm'         end_of_word
 KEYWORD_async       <- 'async'       end_of_word
 KEYWORD_await       <- 'await'       end_of_word
@@ -487,7 +485,7 @@ KEYWORD_var         <- 'var'         end_of_word
 KEYWORD_volatile    <- 'volatile'    end_of_word
 KEYWORD_while       <- 'while'       end_of_word
 
-keyword <- KEYWORD_align / KEYWORD_and / KEYWORD_allowzero / KEYWORD_anyerror / KEYWORD_asm
+keyword <- KEYWORD_align / KEYWORD_and / KEYWORD_allowzero / KEYWORD_asm
          / KEYWORD_async / KEYWORD_await / KEYWORD_break / KEYWORD_cancel
          / KEYWORD_catch / KEYWORD_comptime / KEYWORD_const / KEYWORD_continue
          / KEYWORD_defer / KEYWORD_else / KEYWORD_enum / KEYWORD_errdefer
