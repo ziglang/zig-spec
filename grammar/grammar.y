@@ -83,7 +83,6 @@ PrimaryExpr
     <- AsmExpr
      / IfExpr
      / KEYWORD_break BreakLabel? Expr?
-     / KEYWORD_cancel Expr
      / KEYWORD_comptime Expr
      / KEYWORD_continue BreakLabel?
      / KEYWORD_resume Expr
@@ -114,7 +113,7 @@ TypeExpr <- PrefixTypeOp* ErrorUnionExpr
 ErrorUnionExpr <- SuffixExpr (EXCLAMATIONMARK TypeExpr)?
 
 SuffixExpr
-    <- AsyncPrefix PrimaryTypeExpr SuffixOp* FnCallArguments
+    <- KEYWORD_async PrimaryTypeExpr SuffixOp* FnCallArguments
      / PrimaryTypeExpr (SuffixOp / FnCallArguments)*
 
 PrimaryTypeExpr
@@ -190,7 +189,7 @@ FnCC
     <- KEYWORD_nakedcc
      / KEYWORD_stdcallcc
      / KEYWORD_extern
-     / KEYWORD_async (LARROW TypeExpr RARROW)?
+     / KEYWORD_async
 
 ParamDecl <- (KEYWORD_noalias / KEYWORD_comptime)? (IDENTIFIER COLON)? ParamType
 
@@ -294,8 +293,6 @@ SuffixOp
      / DOT IDENTIFIER
      / DOTASTERISK
      / DOTQUESTIONMARK
-
-AsyncPrefix <- KEYWORD_async (LARROW PrefixExpr RARROW)?
 
 FnCallArguments <- LPAREN ExprList RPAREN
 
@@ -440,7 +437,6 @@ KEYWORD_asm         <- 'asm'         end_of_word
 KEYWORD_async       <- 'async'       end_of_word
 KEYWORD_await       <- 'await'       end_of_word
 KEYWORD_break       <- 'break'       end_of_word
-KEYWORD_cancel      <- 'cancel'      end_of_word
 KEYWORD_catch       <- 'catch'       end_of_word
 KEYWORD_comptime    <- 'comptime'    end_of_word
 KEYWORD_const       <- 'const'       end_of_word
@@ -485,7 +481,7 @@ KEYWORD_volatile    <- 'volatile'    end_of_word
 KEYWORD_while       <- 'while'       end_of_word
 
 keyword <- KEYWORD_align / KEYWORD_and / KEYWORD_allowzero / KEYWORD_asm
-         / KEYWORD_async / KEYWORD_await / KEYWORD_break / KEYWORD_cancel
+         / KEYWORD_async / KEYWORD_await / KEYWORD_break
          / KEYWORD_catch / KEYWORD_comptime / KEYWORD_const / KEYWORD_continue
          / KEYWORD_defer / KEYWORD_else / KEYWORD_enum / KEYWORD_errdefer
          / KEYWORD_error / KEYWORD_export / KEYWORD_extern / KEYWORD_false
