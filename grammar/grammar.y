@@ -5,8 +5,8 @@ ContainerMembers
     <- TestDecl ContainerMembers
      / TopLevelComptime ContainerMembers
      / KEYWORD_pub? TopLevelDecl ContainerMembers
-     / KEYWORD_pub? ContainerField COMMA ContainerMembers
-     / KEYWORD_pub? ContainerField
+     / ContainerField COMMA ContainerMembers
+     / ContainerField
      /
 
 TestDecl <- KEYWORD_test STRINGLITERAL Block
