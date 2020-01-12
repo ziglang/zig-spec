@@ -121,6 +121,7 @@ PrimaryTypeExpr
      / CHAR_LITERAL
      / ContainerDecl
      / DOT IDENTIFIER
+     / DOT InitList
      / ErrorSetDecl
      / FLOAT
      / FnProto
@@ -347,7 +348,6 @@ string_char
 
 line_comment <- '//'[^\n]*
 line_string <- ("\\\\" [^\n]* [ \n]*)+
-line_cstring <- ("c\\\\" [^\n]* [ \n]*)+
 skip <- ([ \n] / line_comment)*
 
 CHAR_LITERAL <- "'" char_char "'" skip
@@ -362,11 +362,10 @@ INTEGER
      / "0x" hex+   skip
      /      [0-9]+ skip
 STRINGLITERAL
-    <- "c"? "\"" string_char* "\"" skip
+    <- "\"" string_char* "\"" skip
      / line_string                 skip
-     / line_cstring                skip
 IDENTIFIER
-    <- !keyword ("c" !["\\] / [A-Zabd-z_]) [A-Za-z0-9_]* skip
+    <- !keyword [A-Za-z_] [A-Za-z0-9_]* skip
      / "@\"" string_char* "\""                            skip
 BUILTINIDENTIFIER <- "@"[A-Za-z_][A-Za-z0-9_]* skip
 
