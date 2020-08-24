@@ -18,7 +18,7 @@ TopLevelDecl
      / (KEYWORD_export / KEYWORD_extern STRINGLITERALSINGLE?)? KEYWORD_threadlocal? VarDecl
      / KEYWORD_usingnamespace Expr SEMICOLON
 
-FnProto <- KEYWORD_fn IDENTIFIER? LPAREN ParamDeclList RPAREN ByteAlign? LinkSection? EXCLAMATIONMARK? (KEYWORD_var / TypeExpr)
+FnProto <- KEYWORD_fn IDENTIFIER? LPAREN ParamDeclList RPAREN ByteAlign? LinkSection? CallconvSection? EXCLAMATIONMARK? (KEYWORD_var / TypeExpr)
 
 VarDecl <- (KEYWORD_const / KEYWORD_var) IDENTIFIER (COLON TypeExpr)? ByteAlign? LinkSection? (EQUAL Expr)? SEMICOLON
 
@@ -188,6 +188,8 @@ WhileContinueExpr <- COLON LPAREN AssignExpr RPAREN
 LinkSection <- KEYWORD_linksection LPAREN Expr RPAREN
 
 # Fn specific
+CallconvSection <- KEYWORD_callconv LPAREN Expr RPAREN
+
 ParamDecl <- (KEYWORD_noalias / KEYWORD_comptime)? (IDENTIFIER COLON)? ParamType
 
 ParamType
@@ -441,6 +443,7 @@ KEYWORD_asm         <- 'asm'         end_of_word
 KEYWORD_async       <- 'async'       end_of_word
 KEYWORD_await       <- 'await'       end_of_word
 KEYWORD_break       <- 'break'       end_of_word
+KEYWORD_callconv    <- 'callconv'    end_of_word
 KEYWORD_catch       <- 'catch'       end_of_word
 KEYWORD_comptime    <- 'comptime'    end_of_word
 KEYWORD_const       <- 'const'       end_of_word
@@ -485,10 +488,10 @@ KEYWORD_while       <- 'while'       end_of_word
 
 keyword <- KEYWORD_align / KEYWORD_allowzero / KEYWORD_and / KEYWORD_anyframe
          / KEYWORD_asm / KEYWORD_async / KEYWORD_await / KEYWORD_break
-         / KEYWORD_catch / KEYWORD_comptime / KEYWORD_const / KEYWORD_continue
-         / KEYWORD_defer / KEYWORD_else / KEYWORD_enum / KEYWORD_errdefer
-         / KEYWORD_error / KEYWORD_export / KEYWORD_extern / KEYWORD_false
-         / KEYWORD_fn / KEYWORD_for / KEYWORD_if / KEYWORD_inline
+         / KEYWORD_callconv / KEYWORD_catch / KEYWORD_comptime / KEYWORD_const
+         / KEYWORD_continue / KEYWORD_defer / KEYWORD_else / KEYWORD_enum
+         / KEYWORD_errdefer / KEYWORD_error / KEYWORD_export / KEYWORD_extern
+         / KEYWORD_false / KEYWORD_fn / KEYWORD_for / KEYWORD_if / KEYWORD_inline
          / KEYWORD_noalias / KEYWORD_nosuspend / KEYWORD_noinline / KEYWORD_null
          / KEYWORD_or / KEYWORD_orelse / KEYWORD_packed / KEYWORD_pub
          / KEYWORD_resume / KEYWORD_return / KEYWORD_linksection
