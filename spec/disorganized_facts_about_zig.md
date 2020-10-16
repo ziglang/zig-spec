@@ -1,6 +1,6 @@
 # Disorganized Facts About Zig
 
-Please not that this document may contain outdated, incomplete, or incorrect information.  It is purely for organization purposes and is still undergoing heavy editing.
+Please note that this document may contain outdated, incomplete, or incorrect information.  It is purely for organization purposes and is still undergoing heavy editing.
 
 The term "This Document" should be interpreted as referring to the eventual spec that this turns into, not this scratchpad.
 
@@ -11,6 +11,140 @@ This specification describes the details of the Zig Language, as well as anythin
 Please note also that this document (and the zig language itself) is a work in progress.  As a result, it may contain outdated, incomplete, or incorrect information.
 
 ## Definitions
+
+### Types of Values
+- Assignable values: can use as lhs of assignment
+	- symbol
+	- result of field access
+	- result of dereference
+	- result of `@field(..)`
+	- result of array subscript operator
+	- result of optional unwrapping? y tho?
+
+- Temporary values:
+
+Quirk: Constant if comptime-known, mutable otherwise.
+
+
+### Expression Operators
+
+| Operator | Usage | Priority | 
+| -------- | ----- | -------- | 
+| Addition | `a + b` | ? |
+| Wrapping Addition | `a +% b` | ? |
+| Subtraction | `a - b` | ? |
+| Wrapping Subtraction | `a -% b` | ? |
+| Negation | `- a` | ? |
+| Wrapping Negation | `-% a` | ? |
+| Multiplication | `a * b` | ? |
+| Wrapping Multiplication | `a *% b` | ? |
+| Division | `a / b` | ? |
+| Remainder Division | `a % b` | ? |
+| Bit Shift Left | `a << b` | ? |
+| Bit Shift Right | `a >> b` | ? |
+| Bitwise AND | `a & b` | ? |
+| Bitwise OR | `a | b` | ? |
+| Bitwise XOR | `a ^ b` | ? |
+| Bitwise NOT | `~ a` | ? |
+| Default Optional | `a orelse b` | ? |
+| Unwrap Optional | `a . ?` | ? |
+| Boolean AND | `a and b` | ? |
+| Boolean OR | `a or b` | ? |
+| Boolean NOT | `! a` | ? |
+| Equality Comparison | `a == b` | ? |
+| Inequality Comparison | `a != b` | ? |
+| Greater Than Comparison | `a > b` | ? |
+| Greater Than Or Equal To Comparison | `a >= b` | ? |
+| Less Than Comparison | `a < b` | ? |
+| Less Than Or Equal To Comparison | `a <= b` | ? |
+| Array Concatenation | `a ++ b` | ? |
+| Array Multiplication | `a ** b` | ? |
+| Pointer Dereference | `a . *` | ? |
+| Address Of | `& a` | ? |
+| Field Access | `a . b` | 1 |
+| Subscript | `a [ b ]` | 1 |
+| Slice | `a [ b .. c? ]` | 1 |
+| Function Call | `a ( params? )` | 1 |
+
+### Type Expressions
+
+| Name | Usage |
+| ---- | ----- |
+| Error Set Union | `a || b` |
+| Error Union | `a ! b` |
+| Optional | `? a` |
+| Pointer | `* a` |
+| Array | `[ a ] b` |
+| Inferred Error Set | `! a` (top level of return type expression only) |
+
+### Control Flow Expressions
+
+| Name | Usage |
+| ---- | ----- |
+| Return | `return a` |
+| Break | `break a` |
+| Continue | `continue` |
+| Assembly | `asm ...` |
+| Catch | `a catch b` |
+| Capturing Catch | `a catch |err| b` |
+| Try | `try a` |
+| If Boolean | `if (cond) a else b` |
+| If Optional | `if (cond) |val| a else b` |
+| If Error Union | `if (cond) |val| a else |err| b` |
+| While Boolean | `while (cond) a else b` |
+| While Optional | `while (cond) |val| a else b` |
+| While Error | `while (cond) |val| a else |err| b` |
+| For | `for (arr) |val, i| a else b` |
+| Switch | `switch (x) ... TODO` |
+| Comptime | `comptime a` |
+| Nosuspend | `nosuspend a` |
+| Block | `{ statements }` |
+| Labeled Block | `label: { statements }` |
+| Unreachable | `unreachable` |
+
+### Literal Expressions
+
+| Name | Usage |
+| ---- | ----- |
+| Function Type Literal | `fn ( params? ) return_expr` |
+| Function Literal | `fn ( named_params? ) return_expr { statements }` |
+| Float Literal | `3.14` |
+| Int Literal | `-345` |
+| String Literal | `"Hello, zig!"` |
+| Char Literal | `'a'` |
+| Type Literal | `struct|union|opaque { ... }` |
+| Anonymous Tuple Literal | `.{ a, b, c }` |
+| Anonymous Struct Literal | `.{ .name1 = a, .name2 = b }`
+| Keyed Initializer Literal | `Type{ .name1 = a, .name2 = b }` |
+| Ordered Initializer Literal | `Type{ a, b, c }` |
+| Inferred Array Literal | `[_]PayloadType{ a, b, c }`
+| Enum Literal | `.A`
+| Error Set Literal | `error { A, B }` |
+| Error Literal | `error.A` |
+
+### Statements
+
+| Name | Usage |
+| ---- | ----- |
+| Constant Declaration | `const a = expression;` |
+| Variable Declaration | `var a = expression;` |
+| Comptime Variable Declaration | `comptime var a = expression;` |
+| Using Namespace Declaration | `usingnamespace a;` |
+| Addition Assignment | `a += b;` |
+| Wrapping Addition Assignment | `a +%= b;` |
+| Subtraction Assignment | `a -= b;` |
+| Wrapping Subtraction Assignment | `a -%= b;` |
+| Multiplication Assignment | `a *= b;` |
+| Wrapping Multiplication Assignment | `a *%= b;` |
+| Division Assignment | `a /= b;` |
+| Remainder Division Assignment | `a %= b;` |
+| Bit Shift Left Assignment | `a <<= b;` |
+| Bit Shift Right Assignment | `a >>= b;` |
+| Bitwise AND Assignment | `a &= b;` |
+| Bitwise OR Assignment | `a |= b;` |
+| Bitwise XOR Assignment | `a ^= b;` |
+
+TODO there are a lot more statements
 
 ### Invalid Zig
 
@@ -176,6 +310,22 @@ Zig code can be interpreted at comptime and executed at runtime.  The semantics 
 ### Operations
 
 ### Panic
+
+### Calling Conventions
+
+- Unspecified
+- C
+- Naked
+- Async
+- Interrupt
+- Signal
+- Stdcall
+- Fastcall
+- Vectorcall
+- Thiscall
+- APCS
+- AAPCS
+- AAPCSVFP
 
 ## Builtins
 
