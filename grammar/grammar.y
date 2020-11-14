@@ -18,7 +18,7 @@ TopLevelDecl
      / (KEYWORD_export / KEYWORD_extern STRINGLITERALSINGLE?)? KEYWORD_threadlocal? VarDecl
      / KEYWORD_usingnamespace Expr SEMICOLON
 
-FnProto <- KEYWORD_fn IDENTIFIER? LPAREN ParamDeclList RPAREN ByteAlign? LinkSection? CallConv? EXCLAMATIONMARK? (KEYWORD_var / TypeExpr)
+FnProto <- KEYWORD_fn IDENTIFIER? LPAREN ParamDeclList RPAREN ByteAlign? LinkSection? CallConv? EXCLAMATIONMARK? (KEYWORD_anytype / TypeExpr)
 
 VarDecl <- (KEYWORD_const / KEYWORD_var) IDENTIFIER (COLON TypeExpr)? ByteAlign? LinkSection? (EQUAL Expr)? SEMICOLON
 
@@ -193,7 +193,7 @@ CallConv <- KEYWORD_callconv LPAREN Expr RPAREN
 ParamDecl <- (KEYWORD_noalias / KEYWORD_comptime)? (IDENTIFIER COLON)? ParamType
 
 ParamType
-    <- KEYWORD_var
+    <- KEYWORD_anytype
      / DOT3
      / TypeExpr
 
@@ -309,6 +309,7 @@ ContainerDeclAuto <- ContainerDeclType LBRACE ContainerMembers RBRACE
 
 ContainerDeclType
     <- KEYWORD_struct
+     / KEYWORD_opaque
      / KEYWORD_enum (LPAREN Expr RPAREN)?
      / KEYWORD_union (LPAREN (KEYWORD_enum (LPAREN Expr RPAREN)? / Expr) RPAREN)?
 
@@ -439,6 +440,7 @@ KEYWORD_align       <- 'align'       end_of_word
 KEYWORD_allowzero   <- 'allowzero'   end_of_word
 KEYWORD_and         <- 'and'         end_of_word
 KEYWORD_anyframe    <- 'anyframe'    end_of_word
+KEYWORD_anytype     <- 'anytype'     end_of_word
 KEYWORD_asm         <- 'asm'         end_of_word
 KEYWORD_async       <- 'async'       end_of_word
 KEYWORD_await       <- 'await'       end_of_word
@@ -464,6 +466,7 @@ KEYWORD_noalias     <- 'noalias'     end_of_word
 KEYWORD_nosuspend   <- 'nosuspend'   end_of_word
 KEYWORD_noinline    <- 'noinline'   end_of_word
 KEYWORD_null        <- 'null'        end_of_word
+KEYWORD_opaque      <- 'opaque'      end_of_word
 KEYWORD_or          <- 'or'          end_of_word
 KEYWORD_orelse      <- 'orelse'      end_of_word
 KEYWORD_packed      <- 'packed'      end_of_word
@@ -487,14 +490,14 @@ KEYWORD_volatile    <- 'volatile'    end_of_word
 KEYWORD_while       <- 'while'       end_of_word
 
 keyword <- KEYWORD_align / KEYWORD_allowzero / KEYWORD_and / KEYWORD_anyframe
-         / KEYWORD_asm / KEYWORD_async / KEYWORD_await / KEYWORD_break
-         / KEYWORD_callconv / KEYWORD_catch / KEYWORD_comptime / KEYWORD_const
-         / KEYWORD_continue / KEYWORD_defer / KEYWORD_else / KEYWORD_enum
-         / KEYWORD_errdefer / KEYWORD_error / KEYWORD_export / KEYWORD_extern
-         / KEYWORD_false / KEYWORD_fn / KEYWORD_for / KEYWORD_if / KEYWORD_inline
-         / KEYWORD_noalias / KEYWORD_nosuspend / KEYWORD_noinline / KEYWORD_null
-         / KEYWORD_or / KEYWORD_orelse / KEYWORD_packed / KEYWORD_pub
-         / KEYWORD_resume / KEYWORD_return / KEYWORD_linksection
+         / KEYWORD_anytype / KEYWORD_asm / KEYWORD_async / KEYWORD_await
+         / KEYWORD_break / KEYWORD_callconv / KEYWORD_catch / KEYWORD_comptime
+         / KEYWORD_const / KEYWORD_continue / KEYWORD_defer / KEYWORD_else
+         / KEYWORD_enum / KEYWORD_errdefer / KEYWORD_error / KEYWORD_export
+         / KEYWORD_extern / KEYWORD_false / KEYWORD_fn / KEYWORD_for / KEYWORD_if
+         / KEYWORD_inline / KEYWORD_noalias / KEYWORD_nosuspend / KEYWORD_noinline
+         / KEYWORD_null / KEYWORD_opaque / KEYWORD_or / KEYWORD_orelse / KEYWORD_packed
+         / KEYWORD_pub / KEYWORD_resume / KEYWORD_return / KEYWORD_linksection
          / KEYWORD_struct / KEYWORD_suspend / KEYWORD_switch
          / KEYWORD_test / KEYWORD_threadlocal / KEYWORD_true / KEYWORD_try
          / KEYWORD_undefined / KEYWORD_union / KEYWORD_unreachable
