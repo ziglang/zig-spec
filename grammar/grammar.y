@@ -62,7 +62,7 @@ BlockExpr <- BlockLabel? Block
 # *** Expression Level ***
 AssignExpr <- Expr (AssignOp Expr)?
 
-Expr <- KEYWORD_try* BoolOrExpr
+Expr <- BoolOrExpr
 
 BoolOrExpr <- BoolAndExpr (KEYWORD_or BoolAndExpr)*
 
@@ -296,13 +296,12 @@ SuffixOp
 FnCallArguments <- LPAREN ExprList RPAREN
 
 # Ptr specific
-ArrayTypeStart <- LBRACKET Expr? RBRACKET
+ArrayTypeStart <- LBRACKET Expr? (COLON Expr)? RBRACKET
 
 PtrTypeStart
     <- ASTERISK
      / ASTERISK2
-     / PTRUNKNOWN
-     / PTRC
+     / LBRACKET ASTERISK (LETTERC / COLON Expr)? RBRACKET
 
 # ContainerDecl specific
 ContainerDeclAuto <- ContainerDeclType LBRACE ContainerMembers RBRACE
@@ -403,7 +402,7 @@ LARROW2              <- '<<'     ![=]      skip
 LARROW2EQUAL         <- '<<='              skip
 LARROWEQUAL          <- '<='               skip
 LBRACE               <- '{'                skip
-LBRACKET             <- '['      ![*]      skip
+LBRACKET             <- '['                skip
 LPAREN               <- '('                skip
 MINUS                <- '-'      ![%=>]    skip
 MINUSEQUAL           <- '-='               skip
@@ -420,8 +419,7 @@ PLUS2                <- '++'               skip
 PLUSEQUAL            <- '+='               skip
 PLUSPERCENT          <- '+%'     ![=]      skip
 PLUSPERCENTEQUAL     <- '+%='              skip
-PTRC                 <- '[*c]'             skip
-PTRUNKNOWN           <- '[*]'              skip
+LETTERC              <- 'c'                skip
 QUESTIONMARK         <- '?'                skip
 RARROW               <- '>'      ![>=]     skip
 RARROW2              <- '>>'     ![=]      skip
@@ -464,7 +462,7 @@ KEYWORD_if          <- 'if'          end_of_word
 KEYWORD_inline      <- 'inline'      end_of_word
 KEYWORD_noalias     <- 'noalias'     end_of_word
 KEYWORD_nosuspend   <- 'nosuspend'   end_of_word
-KEYWORD_noinline    <- 'noinline'   end_of_word
+KEYWORD_noinline    <- 'noinline'    end_of_word
 KEYWORD_null        <- 'null'        end_of_word
 KEYWORD_opaque      <- 'opaque'      end_of_word
 KEYWORD_or          <- 'or'          end_of_word
