@@ -18,7 +18,7 @@ TopLevelDecl
      / (KEYWORD_export / KEYWORD_extern STRINGLITERALSINGLE?)? KEYWORD_threadlocal? VarDecl
      / KEYWORD_usingnamespace Expr SEMICOLON
 
-FnProto <- KEYWORD_fn IDENTIFIER? LPAREN ParamDeclList RPAREN ByteAlign? LinkSection? CallconvSection? EXCLAMATIONMARK? (KEYWORD_var / TypeExpr)
+FnProto <- KEYWORD_fn IDENTIFIER? LPAREN ParamDeclList RPAREN ByteAlign? LinkSection? CallConv? EXCLAMATIONMARK? (KEYWORD_var / TypeExpr)
 
 VarDecl <- (KEYWORD_const / KEYWORD_var) IDENTIFIER (COLON TypeExpr)? ByteAlign? LinkSection? (EQUAL Expr)? SEMICOLON
 
@@ -188,7 +188,7 @@ WhileContinueExpr <- COLON LPAREN AssignExpr RPAREN
 LinkSection <- KEYWORD_linksection LPAREN Expr RPAREN
 
 # Fn specific
-CallconvSection <- KEYWORD_callconv LPAREN Expr RPAREN
+CallConv <- KEYWORD_callconv LPAREN Expr RPAREN
 
 ParamDecl <- (KEYWORD_noalias / KEYWORD_comptime)? (IDENTIFIER COLON)? ParamType
 
