@@ -22,7 +22,7 @@ FnProto <- KEYWORD_fn IDENTIFIER? LPAREN ParamDeclList RPAREN ByteAlign? LinkSec
 
 VarDecl <- (KEYWORD_const / KEYWORD_var) IDENTIFIER (COLON TypeExpr)? ByteAlign? LinkSection? (EQUAL Expr)? SEMICOLON
 
-ContainerField <- KEYWORD_comptime? IDENTIFIER (COLON TypeExpr ByteAlign?)? (EQUAL Expr)?
+ContainerField <- KEYWORD_comptime? IDENTIFIER (COLON (KEYWORD_anytype / TypeExpr) ByteAlign?)? (EQUAL Expr)?
 
 # *** Block Level ***
 Statement
@@ -31,7 +31,7 @@ Statement
      / KEYWORD_nosuspend BlockExprStatement
      / KEYWORD_suspend (SEMICOLON / BlockExprStatement)
      / KEYWORD_defer BlockExprStatement
-     / KEYWORD_errdefer BlockExprStatement
+     / KEYWORD_errdefer Payload? BlockExprStatement
      / IfStatement
      / LabeledStatement
      / SwitchExpr
@@ -288,7 +288,7 @@ PrefixTypeOp
      / PtrTypeStart (KEYWORD_align LPAREN Expr (COLON INTEGER COLON INTEGER)? RPAREN / KEYWORD_const / KEYWORD_volatile / KEYWORD_allowzero)*
 
 SuffixOp
-    <- LBRACKET Expr (DOT2 Expr?)? RBRACKET
+    <- LBRACKET Expr (DOT2 (Expr? (COLON Expr)?)?)? RBRACKET
      / DOT IDENTIFIER
      / DOTASTERISK
      / DOTQUESTIONMARK
@@ -332,21 +332,52 @@ ExprList <- (Expr COMMA)* Expr?
 
 # *** Tokens ***
 eof <- !.
+bin <- [01]
+bin_ <- '_'? bin
+oct <- [0-7]
+oct_ <- '_'? oct
 hex <- [0-9a-fA-F]
-hex_ <- ('_'/hex)
+hex_ <- '_'? hex
 dec <- [0-9]
-dec_ <- ('_'/dec)
+dec_ <- '_'? dec
 
-dec_int <- dec (dec_* dec)?
-hex_int <- hex (hex_* dec)?
+bin_int <- bin bin_*
+oct_int <- oct oct_*
+dec_int <- dec dec_*
+hex_int <- hex hex_*
+
+ox80_oxBF <- [\200-\277]
+oxF4 <- '\364'
+ox80_ox8F <- [\200-\217]
+oxF1_oxF3 <- [\361-\363]
+oxF0 <- '\360'
+ox90_0xBF <- [\220-\277]
+oxEE_oxEF <- [\356-\357]
+oxED <- '\355'
+ox80_ox9F <- [\200-\237]
+oxE1_oxEC <- [\341-\354]
+oxE0 <- '\340'
+oxA0_oxBF <- [\240-\277]
+oxC2_oxDF <- [\302-\337]
+
+utf8_literal <- oxF4 ox80_ox8F ox80_oxBF ox80_oxBF
+     / oxF1_oxF3 ox80_oxBF ox80_oxBF ox80_oxBF
+     / oxF0 ox90_0xBF ox80_oxBF ox80_oxBF
+     / oxEE_oxEF ox80_oxBF ox80_oxBF
+     / oxED ox80_ox9F ox80_oxBF
+     / oxE1_oxEC ox80_oxBF ox80_oxBF
+     / oxE0 oxA0_oxBF ox80_oxBF
+     / oxC2_oxDF ox80_oxBF
 
 char_escape
     <- "\\x" hex hex
      / "\\u{" hex+ "}"
      / "\\" [nr\\t'"]
 char_char
-    <- char_escape
+    <- utf8_literal
+     / char_escape
      / [^\\'\n]
+
 string_char
     <- char_escape
      / [^\\"\n]
@@ -357,19 +388,19 @@ skip <- ([ \n] / line_comment)*
 
 CHAR_LITERAL <- "'" char_char "'" skip
 FLOAT
-    <- "0x" hex_* hex "." hex_int ([pP] [-+]? hex_int)? skip
+    <- "0x" hex_int "." hex_int ([pP] [-+]? dec_int)? skip
      /      dec_int   "." dec_int ([eE] [-+]? dec_int)? skip
-     / "0x" hex_* hex "."? [pP] [-+]? hex_int skip
+     / "0x" hex_int "."? [pP] [-+]? hex_int skip
      /      dec_int   "."? [eE] [-+]? dec_int skip
 INTEGER
-    <- "0b" [_01]*  [01]  skip
-     / "0o" [_0-7]* [0-7] skip
-     / "0x" hex_* hex skip
+    <- "0b" bin_int skip
+     / "0o" oct_int skip
+     / "0x" hex_int skip
      /      dec_int   skip
 STRINGLITERALSINGLE <- "\"" string_char* "\"" skip
 STRINGLITERAL
     <- STRINGLITERALSINGLE
-     / line_string                 skip
+     / (line_string                 skip)+
 IDENTIFIER
     <- !keyword [A-Za-z_] [A-Za-z0-9_]* skip
      / "@\"" string_char* "\""                            skip
