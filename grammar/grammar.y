@@ -2,16 +2,18 @@ Root <- skip ContainerMembers eof
 
 # *** Top level ***
 ContainerMembers
-    <- TestDecl ContainerMembers
-     / TopLevelComptime ContainerMembers
-     / KEYWORD_pub? TopLevelDecl ContainerMembers
-     / ContainerField COMMA ContainerMembers
-     / ContainerField
-     /
+    <- container_doc_comment? (
+         TestDecl ContainerMembers
+         / TopLevelComptime ContainerMembers
+         / doc_comment? KEYWORD_pub? TopLevelDecl ContainerMembers
+         / ContainerField COMMA ContainerMembers
+         / ContainerField
+         /
+     )
 
-TestDecl <- KEYWORD_test STRINGLITERALSINGLE Block
+TestDecl <- doc_comment? KEYWORD_test STRINGLITERALSINGLE Block
 
-TopLevelComptime <- KEYWORD_comptime BlockExpr
+TopLevelComptime <- doc_comment? KEYWORD_comptime BlockExpr
 
 TopLevelDecl
     <- (KEYWORD_export / KEYWORD_extern STRINGLITERALSINGLE? / (KEYWORD_inline / KEYWORD_noinline))? FnProto (SEMICOLON / Block)
@@ -22,7 +24,7 @@ FnProto <- KEYWORD_fn IDENTIFIER? LPAREN ParamDeclList RPAREN ByteAlign? LinkSec
 
 VarDecl <- (KEYWORD_const / KEYWORD_var) IDENTIFIER (COLON TypeExpr)? ByteAlign? LinkSection? (EQUAL Expr)? SEMICOLON
 
-ContainerField <- KEYWORD_comptime? IDENTIFIER (COLON (KEYWORD_anytype / TypeExpr) ByteAlign?)? (EQUAL Expr)?
+ContainerField <- doc_comment? KEYWORD_comptime? IDENTIFIER (COLON (KEYWORD_anytype / TypeExpr) ByteAlign?)? (EQUAL Expr)?
 
 # *** Block Level ***
 Statement
@@ -190,7 +192,7 @@ LinkSection <- KEYWORD_linksection LPAREN Expr RPAREN
 # Fn specific
 CallConv <- KEYWORD_callconv LPAREN Expr RPAREN
 
-ParamDecl <- (KEYWORD_noalias / KEYWORD_comptime)? (IDENTIFIER COLON)? ParamType
+ParamDecl <- doc_comment? (KEYWORD_noalias / KEYWORD_comptime)? (IDENTIFIER COLON)? ParamType
 
 ParamType
     <- KEYWORD_anytype
@@ -316,7 +318,7 @@ ContainerDeclType
 ByteAlign <- KEYWORD_align LPAREN Expr RPAREN
 
 # Lists
-IdentifierList <- (IDENTIFIER COMMA)* IDENTIFIER?
+IdentifierList <- (doc_comment? IDENTIFIER COMMA)* (doc_comment? IDENTIFIER)?
 
 SwitchProngList <- (SwitchProng COMMA)* SwitchProng?
 
@@ -360,29 +362,46 @@ oxE0 <- '\340'
 oxA0_oxBF <- [\240-\277]
 oxC2_oxDF <- [\302-\337]
 
-utf8_literal <- oxF4 ox80_ox8F ox80_oxBF ox80_oxBF
+# From https://lemire.me/blog/2018/05/09/how-quickly-can-you-check-that-a-string-is-valid-unicode-utf-8/
+# First Byte      Second Byte     Third Byte      Fourth Byte
+# [0x00,0x7F]
+# [0xC2,0xDF]     [0x80,0xBF]
+#    0xE0         [0xA0,0xBF]     [0x80,0xBF]
+# [0xE1,0xEC]     [0x80,0xBF]     [0x80,0xBF]
+#    0xED         [0x80,0x9F]     [0x80,0xBF]
+# [0xEE,0xEF]     [0x80,0xBF]     [0x80,0xBF]
+#    0xF0         [0x90,0xBF]     [0x80,0xBF]     [0x80,0xBF]
+# [0xF1,0xF3]     [0x80,0xBF]     [0x80,0xBF]     [0x80,0xBF]
+#    0xF4         [0x80,0x8F]     [0x80,0xBF]     [0x80,0xBF]
+
+mb_utf8_literal <-
+       oxF4      ox80_ox8F ox80_oxBF ox80_oxBF
      / oxF1_oxF3 ox80_oxBF ox80_oxBF ox80_oxBF
-     / oxF0 ox90_0xBF ox80_oxBF ox80_oxBF
+     / oxF0      ox90_0xBF ox80_oxBF ox80_oxBF
      / oxEE_oxEF ox80_oxBF ox80_oxBF
-     / oxED ox80_ox9F ox80_oxBF
+     / oxED      ox80_ox9F ox80_oxBF
      / oxE1_oxEC ox80_oxBF ox80_oxBF
-     / oxE0 oxA0_oxBF ox80_oxBF
+     / oxE0      oxA0_oxBF ox80_oxBF
      / oxC2_oxDF ox80_oxBF
+
+ascii_char_not_nl_slash_squote <- [\000-\011\013-\046-\050-\133\135-\177]
 
 char_escape
     <- "\\x" hex hex
      / "\\u{" hex+ "}"
      / "\\" [nr\\t'"]
 char_char
-    <- utf8_literal
+    <- mb_utf8_literal
      / char_escape
-     / [^\\'\n]
+     / ascii_char_not_nl_slash_squote
 
 string_char
     <- char_escape
      / [^\\"\n]
 
-line_comment <- '//'[^\n]*
+container_doc_comment <- ('//!' [^\n]* [ \n]*)+
+doc_comment <- ('///' [^\n]* [ \n]*)+
+line_comment <- '//' ![!/][^\n]* / '////' [^\n]*
 line_string <- ("\\\\" [^\n]* [ \n]*)+
 skip <- ([ \n] / line_comment)*
 
