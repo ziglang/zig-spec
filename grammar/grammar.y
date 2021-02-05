@@ -11,7 +11,7 @@ ContainerMembers
          /
      )
 
-TestDecl <- doc_comment? KEYWORD_test STRINGLITERALSINGLE Block
+TestDecl <- doc_comment? KEYWORD_test STRINGLITERALSINGLE? Block
 
 TopLevelComptime <- doc_comment? KEYWORD_comptime BlockExpr
 
