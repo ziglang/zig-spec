@@ -1,5 +1,5 @@
-
-all: build build/parser build/parser_debug
+.PHONY: all clean
+all: build/parser build/parser_debug
 
 clean:
 	rm -r build
@@ -7,7 +7,7 @@ clean:
 build:
 	mkdir build
 
-build/parser.c: grammar.y
+build/parser.c: grammar.y | build
 	peg $^ > $@
 
 build/full.c: main.c build/parser.c
