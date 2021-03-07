@@ -1,0 +1,28 @@
+name: continuous audit
+
+on:
+  push:
+  schedule:
+    - cron: '10 1 * * *'
+  workflow_dispatch:
+
+jobs:
+  npm-run-build-templates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: check_parser.sh
+        run: |
+          pushd grammar
+            PEG_VERSION=peg-0.1.18
+            wget https://www.piumarta.com/software/peg/$PEG_VERSION.tar.gz
+            tar zxf $PEG_VERSION.tar.gz
+            rm $PEG_VERSION.tar.gz
+            pushd $PEG_VERSION
+              make
+            popd
+            export PATH=$PEG_VERSION:$PATH
+            make
+            ./check_parser.sh
+          popd
+
