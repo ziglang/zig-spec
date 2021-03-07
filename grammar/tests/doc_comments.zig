@@ -10,8 +10,6 @@ const MyStruct = struct {
     /// This is another doc comment
     b: i32,
 
-    //! Resuming container doc comment
-
     /// And one more field
     c: f32,
 };
@@ -22,12 +20,10 @@ const MyEnum = enum {
 
     /// This is Foo
     Foo,
-    //! It has some other fields
     /// This is Bar
     Bar,
 };
 
-//! This is a container doc comment outside an error block
 /// This is a doc comment for the error block
 const Errors = error {
     /// This documents MyError1
@@ -55,7 +51,6 @@ comptime {
     const foo = add(40, 2);
 }
 
-//! This is container doc comment
 /// This is a doc comment for a test
 test "This is my test" {
 }
