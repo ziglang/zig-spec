@@ -286,8 +286,9 @@ PrefixOp
 PrefixTypeOp
     <- QUESTIONMARK
      / KEYWORD_anyframe MINUSRARROW
-     / ArrayTypeStart (ByteAlign / KEYWORD_const / KEYWORD_volatile / KEYWORD_allowzero)*
+     / SliceTypeStart (ByteAlign / KEYWORD_const / KEYWORD_volatile / KEYWORD_allowzero)*
      / PtrTypeStart (KEYWORD_align LPAREN Expr (COLON INTEGER COLON INTEGER)? RPAREN / KEYWORD_const / KEYWORD_volatile / KEYWORD_allowzero)*
+     / ArrayTypeStart
 
 SuffixOp
     <- LBRACKET Expr (DOT2 (Expr? (COLON Expr)?)?)? RBRACKET
@@ -298,12 +299,14 @@ SuffixOp
 FnCallArguments <- LPAREN ExprList RPAREN
 
 # Ptr specific
-ArrayTypeStart <- LBRACKET Expr? (COLON Expr)? RBRACKET
+SliceTypeStart <- LBRACKET (COLON Expr)? RBRACKET
 
 PtrTypeStart
     <- ASTERISK
      / ASTERISK2
      / LBRACKET ASTERISK (LETTERC / COLON Expr)? RBRACKET
+
+ArrayTypeStart <- LBRACKET Expr (COLON Expr)? RBRACKET
 
 # ContainerDecl specific
 ContainerDeclAuto <- ContainerDeclType LBRACE container_doc_comment? ContainerMembers RBRACE
