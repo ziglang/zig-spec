@@ -1,8 +1,8 @@
-Root <- skip ContainerMembers eof
+Root <- skip container_doc_comment? ContainerMembers eof
 
 # *** Top level ***
 ContainerMembers
-    <- container_doc_comment? (
+    <- (
          TestDecl ContainerMembers
          / TopLevelComptime ContainerMembers
          / doc_comment? KEYWORD_pub? TopLevelDecl ContainerMembers
@@ -306,7 +306,7 @@ PtrTypeStart
      / LBRACKET ASTERISK (LETTERC / COLON Expr)? RBRACKET
 
 # ContainerDecl specific
-ContainerDeclAuto <- ContainerDeclType LBRACE ContainerMembers RBRACE
+ContainerDeclAuto <- ContainerDeclType LBRACE container_doc_comment? ContainerMembers RBRACE
 
 ContainerDeclType
     <- KEYWORD_struct
