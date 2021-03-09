@@ -33,8 +33,8 @@ with the same error; it only checks that either both fail to parse a zig file or
 Note: Set the ZIG environment variable to the path to your zig compiler, otherwise it will
 use the `zig` in your `$PATH`.
 
-Example usage: `./check_parser`
+Example usage: `./check_parser.sh`
 
-Example usage: `./check_parser myfile1.zig myfile2.zig`
+Example usage: `./check_parser.sh myfile1.zig myfile2.zig`
 
-Example usage: `ZIG=/path/to/zig ./check_parser`
+Example usage: `ZIG=/path/to/zig ./check_parser.sh`
