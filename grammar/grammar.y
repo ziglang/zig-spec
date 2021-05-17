@@ -31,7 +31,7 @@ Statement
     <- KEYWORD_comptime? VarDecl
      / KEYWORD_comptime BlockExprStatement
      / KEYWORD_nosuspend BlockExprStatement
-     / KEYWORD_suspend (SEMICOLON / BlockExprStatement)
+     / KEYWORD_suspend BlockExprStatement
      / KEYWORD_defer BlockExprStatement
      / KEYWORD_errdefer Payload? BlockExprStatement
      / IfStatement
