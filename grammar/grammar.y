@@ -24,7 +24,7 @@ FnProto <- KEYWORD_fn IDENTIFIER? LPAREN ParamDeclList RPAREN ByteAlign? LinkSec
 
 VarDecl <- (KEYWORD_const / KEYWORD_var) IDENTIFIER (COLON TypeExpr)? ByteAlign? LinkSection? (EQUAL Expr)? SEMICOLON
 
-ContainerField <- doc_comment? KEYWORD_comptime? IDENTIFIER (COLON (KEYWORD_anytype / TypeExpr) ByteAlign?)? (EQUAL Expr)?
+ContainerField <- doc_comment? KEYWORD_comptime? IDENTIFIER COLON (KEYWORD_anytype / TypeExpr) ByteAlign? (EQUAL Expr)?
 
 # *** Block Level ***
 Statement
