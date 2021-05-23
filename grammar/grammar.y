@@ -1,15 +1,13 @@
 Root <- skip container_doc_comment? ContainerMembers eof
 
 # *** Top level ***
-ContainerMembers
-    <- (
-         TestDecl ContainerMembers
-         / TopLevelComptime ContainerMembers
-         / doc_comment? KEYWORD_pub? TopLevelDecl ContainerMembers
-         / ContainerField COMMA ContainerMembers
-         / ContainerField
-         /
-     )
+ContainerMembers <- ContainerDeclarations ContainerFieldList ContainerDeclarations
+
+ContainerDeclarations
+    <- TestDecl ContainerDeclarations
+     / TopLevelComptime ContainerDeclarations
+     / doc_comment? KEYWORD_pub? TopLevelDecl ContainerDeclarations
+     /
 
 TestDecl <- doc_comment? KEYWORD_test STRINGLITERALSINGLE? Block
 
@@ -334,6 +332,8 @@ StringList <- (STRINGLITERAL COMMA)* STRINGLITERAL?
 ParamDeclList <- (ParamDecl COMMA)* ParamDecl?
 
 ExprList <- (Expr COMMA)* Expr?
+
+ContainerFieldList <- (ContainerField COMMA)* ContainerField?
 
 # *** Tokens ***
 eof <- !.
