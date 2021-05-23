@@ -1,9 +1,13 @@
-Root <- skip container_doc_comment? ContainerMembers eof
+Root <- skip container_doc_comment? StructMembers eof
 
 # *** Top level ***
-ContainerMembers <- ContainerDeclarations ContainerFieldList ContainerDeclarations
+StructMembers <- ContainerDeclarations StructFieldList ContainerDeclarations
 
-TaggedUnionMembers <- ContainerDeclarations TaggedUnionFieldList ContainerDeclarations
+BareUnionMembers <- ContainerDeclarations BareUnionFieldList ContainerDeclarations
+
+InferredTagUnionMembers <- ContainerDeclarations InferredTagUnionFieldList ContainerDeclarations
+
+ExplicitTagUnionMembers <- ContainerDeclarations ExplicitTagUnionFieldList ContainerDeclarations
 
 EnumMembers <- ContainerDeclarations EnumFieldList ContainerDeclarations
 
@@ -26,9 +30,13 @@ FnProto <- KEYWORD_fn IDENTIFIER? LPAREN ParamDeclList RPAREN ByteAlign? LinkSec
 
 VarDecl <- (KEYWORD_const / KEYWORD_var) IDENTIFIER (COLON TypeExpr)? ByteAlign? LinkSection? (EQUAL Expr)? SEMICOLON
 
-ContainerField <- doc_comment? KEYWORD_comptime? IDENTIFIER COLON (KEYWORD_anytype / TypeExpr) ByteAlign? (EQUAL Expr)?
+StructField <- doc_comment? KEYWORD_comptime? IDENTIFIER COLON (KEYWORD_anytype / TypeExpr) ByteAlign? (EQUAL Expr)?
 
-TaggedUnionField <- doc_comment? KEYWORD_comptime? IDENTIFIER (COLON (KEYWORD_anytype / TypeExpr) ByteAlign?)? (EQUAL Expr)?
+BareUnionField <- doc_comment? IDENTIFIER COLON (KEYWORD_anytype / TypeExpr) ByteAlign?
+
+InferredTagUnionField <- doc_comment? IDENTIFIER (COLON (KEYWORD_anytype / TypeExpr) ByteAlign?)? (EQUAL Expr)?
+
+ExplicitTagUnionField <- doc_comment? IDENTIFIER (COLON (KEYWORD_anytype / TypeExpr) ByteAlign?)?
 
 EnumField <- doc_comment? IDENTIFIER (EQUAL Expr)?
 
@@ -316,10 +324,11 @@ ArrayTypeStart <- LBRACKET Expr (COLON Expr)? RBRACKET
 
 # ContainerDecl specific
 ContainerDeclAuto
-    <- KEYWORD_struct LBRACE container_doc_comment? ContainerMembers RBRACE
+    <- KEYWORD_struct LBRACE container_doc_comment? StructMembers RBRACE
      / KEYWORD_opaque LBRACE container_doc_comment? ContainerDeclarations RBRACE
-     / KEYWORD_union LPAREN (KEYWORD_enum (LPAREN Expr RPAREN)? / Expr) RPAREN LBRACE container_doc_comment? TaggedUnionMembers RBRACE
-     / KEYWORD_union LBRACE container_doc_comment? ContainerMembers RBRACE
+     / KEYWORD_union LBRACE container_doc_comment? BareUnionMembers RBRACE
+     / KEYWORD_union LPAREN KEYWORD_enum (LPAREN Expr RPAREN)? RPAREN LBRACE container_doc_comment? InferredTagUnionMembers RBRACE
+     / KEYWORD_union LPAREN Expr RPAREN LBRACE container_doc_comment? ExplicitTagUnionMembers RBRACE
      / KEYWORD_enum (LPAREN Expr RPAREN)? LBRACE container_doc_comment? EnumMembers RBRACE
 
 # Alignment
@@ -340,9 +349,13 @@ ParamDeclList <- (ParamDecl COMMA)* ParamDecl?
 
 ExprList <- (Expr COMMA)* Expr?
 
-ContainerFieldList <- (ContainerField COMMA)* ContainerField?
+StructFieldList <- (StructField COMMA)* StructField?
 
-TaggedUnionFieldList <- (TaggedUnionField COMMA)* TaggedUnionField?
+BareUnionFieldList <- (BareUnionField COMMA)* BareUnionField?
+
+InferredTagUnionFieldList <- (InferredTagUnionField COMMA)* InferredTagUnionField?
+
+ExplicitTagUnionFieldList <- (ExplicitTagUnionField COMMA)* ExplicitTagUnionField?
 
 EnumFieldList <- (EnumField COMMA)* EnumField?
 
