@@ -17,9 +17,9 @@ test "simple coroutine suspend and resume" {
 }
 fn simpleAsyncFn() void {
     global_x += 1;
-    suspend;
+    suspend {}
     global_x += 1;
-    suspend;
+    suspend {}
     global_x += 1;
 }
 
@@ -33,7 +33,7 @@ test "pass parameter to coroutine" {
 }
 fn simpleAsyncFnWithArg(delta: i32) void {
     global_y += delta;
-    suspend;
+    suspend {}
     global_y += delta;
 }
 
@@ -49,7 +49,7 @@ test "suspend at end of function" {
 
         fn suspendAtEnd() void {
             x += 1;
-            suspend;
+            suspend {}
         }
     };
     S.doTheTest();
@@ -73,11 +73,11 @@ test "local variable in async function" {
 
         fn add(a: i32, b: i32) void {
             var accum: i32 = 0;
-            suspend;
+            suspend {}
             accum += a;
-            suspend;
+            suspend {}
             accum += b;
-            suspend;
+            suspend {}
             x = accum;
         }
     };
@@ -101,7 +101,7 @@ test "calling an inferred async function" {
         }
         fn other() void {
             other_frame = @frame();
-            suspend;
+            suspend {}
             x += 1;
         }
     };
@@ -128,7 +128,7 @@ test "@frameSize" {
         }
         fn other(param: i32) void {
             var local: i32 = undefined;
-            suspend;
+            suspend {}
         }
     };
     S.doTheTest();
@@ -268,7 +268,7 @@ test "async function with dot syntax" {
         var y: i32 = 1;
         fn foo() callconv(.Async) void {
             y += 1;
-            suspend;
+            suspend {}
         }
     };
     const p = async S.foo();
@@ -297,7 +297,7 @@ fn doTheAwait(f: anyframe->void) void {
 fn simpleAsyncFn2(y: *i32) callconv(.Async) void {
     defer y.* += 2;
     y.* += 1;
-    suspend;
+    suspend {}
 }
 
 test "@asyncCall with return type" {
@@ -311,7 +311,7 @@ test "@asyncCall with return type" {
 
         fn afunc() i32 {
             global_frame = @frame();
-            suspend;
+            suspend {}
             return 1234;
         }
     };
@@ -347,7 +347,7 @@ test "async fn with inferred error set" {
 
         fn failing() !void {
             global_frame = @frame();
-            suspend;
+            suspend {}
             return error.Fail;
         }
     };
@@ -374,7 +374,7 @@ fn nonFailing() (anyframe->anyerror!void) {
     return &Static.frame;
 }
 fn suspendThenFail() callconv(.Async) anyerror!void {
-    suspend;
+    suspend {}
     return error.Fail;
 }
 fn printTrace(p: anyframe->(anyerror!void)) callconv(.Async) void {
@@ -399,7 +399,7 @@ fn testBreakFromSuspend(my_result: *i32) callconv(.Async) void {
         resume @frame();
     }
     my_result.* += 1;
-    suspend;
+    suspend {}
     my_result.* += 1;
 }
 
@@ -420,7 +420,7 @@ test "heap allocated async function frame" {
 
         fn someFunc() void {
             x += 1;
-            suspend;
+            suspend {}
             x += 1;
         }
     };
@@ -453,7 +453,7 @@ test "async function call return value" {
 
         fn other(x: i32, y: i32) Point {
             frame = @frame();
-            suspend;
+            suspend {}
             return Point{
                 .x = x,
                 .y = y,
@@ -486,7 +486,7 @@ test "suspension points inside branching control flow" {
 
         fn func(b: bool) void {
             while (b) {
-                suspend;
+                suspend {}
                 result += 1;
             }
         }
@@ -540,7 +540,7 @@ test "pass string literal to async function" {
 
         fn hello(msg: []const u8) void {
             frame = @frame();
-            suspend;
+            suspend {}
             expectEqual(@as([]const u8, "hello"), msg);
             ok = true;
         }
@@ -565,7 +565,7 @@ test "await inside an errdefer" {
 
         fn func() void {
             frame = @frame();
-            suspend;
+            suspend {}
         }
     };
     S.doTheTest();
@@ -589,7 +589,7 @@ test "try in an async function with error union and non-zero-bit payload" {
 
         fn theProblem() ![]u8 {
             frame = @frame();
-            suspend;
+            suspend {}
             const result = try other();
             return result;
         }
@@ -621,7 +621,7 @@ test "returning a const error from async function" {
 
         fn fetchUrl(unused: i32, url: []const u8) ![]u8 {
             frame = @frame();
-            suspend;
+            suspend {}
             ok = true;
             return error.OutOfMemory;
         }
@@ -966,7 +966,7 @@ test "@asyncCall with comptime-known function, but not awaited directly" {
 
         fn failing() !void {
             global_frame = @frame();
-            suspend;
+            suspend {}
             return error.Fail;
         }
     };
@@ -976,7 +976,7 @@ test "@asyncCall with comptime-known function, but not awaited directly" {
 test "@asyncCall with actual frame instead of byte buffer" {
     const S = struct {
         fn func() i32 {
-            suspend;
+            suspend {}
             return 1234;
         }
     };
@@ -992,7 +992,7 @@ test "@asyncCall using the result location inside the frame" {
         fn simple2(y: *i32) callconv(.Async) i32 {
             defer y.* += 2;
             y.* += 1;
-            suspend;
+            suspend {}
             return 1234;
         }
         fn getAnswer(f: anyframe->i32, out: *i32) void {
@@ -1094,7 +1094,7 @@ test "nosuspend function call" {
         }
         fn add(a: i32, b: i32) i32 {
             if (a > 100) {
-                suspend;
+                suspend {}
             }
             return a + b;
         }
@@ -1169,7 +1169,7 @@ test "suspend in for loop" {
             global_frame = @frame();
             var sum: u32 = 0;
             for (stuff) |x| {
-                suspend;
+                suspend {}
                 sum += x;
             }
             global_frame = null;
@@ -1196,7 +1196,7 @@ test "suspend in while loop" {
             global_frame = @frame();
             defer global_frame = null;
             while (stuff) |val| {
-                suspend;
+                suspend {}
                 return val;
             }
             return 0;
@@ -1205,7 +1205,7 @@ test "suspend in while loop" {
             global_frame = @frame();
             defer global_frame = null;
             while (stuff) |val| {
-                suspend;
+                suspend {}
                 return val;
             } else |err| {
                 return 0;
@@ -1338,7 +1338,7 @@ test "async function passed 0-bit arg after non-0-bit arg" {
 
         fn bar(x: i32, args: anytype) anyerror!void {
             global_frame = @frame();
-            suspend;
+            suspend {}
             global_int = x;
         }
     };
@@ -1360,7 +1360,7 @@ test "async function passed align(16) arg after align(8) arg" {
         fn bar(x: u64, args: anytype) anyerror!void {
             expect(x == 10);
             global_frame = @frame();
-            suspend;
+            suspend {}
             global_int = args[0];
         }
     };
@@ -1382,7 +1382,7 @@ test "async function call resolves target fn frame, comptime func" {
 
         fn bar() anyerror!void {
             global_frame = @frame();
-            suspend;
+            suspend {}
             global_int += 1;
         }
     };
@@ -1405,7 +1405,7 @@ test "async function call resolves target fn frame, runtime func" {
 
         fn bar() anyerror!void {
             global_frame = @frame();
-            suspend;
+            suspend {}
             global_int += 1;
         }
     };
@@ -1429,7 +1429,7 @@ test "properly spill optional payload capture value" {
 
         fn bar() void {
             global_frame = @frame();
-            suspend;
+            suspend {}
             global_int += 1;
         }
     };
@@ -1465,13 +1465,13 @@ test "handle defer interfering with return value spill" {
 
         fn bar() anyerror!void {
             global_frame1 = @frame();
-            suspend;
+            suspend {}
             return error.Bad;
         }
 
         fn baz() void {
             global_frame2 = @frame();
-            suspend;
+            suspend {}
             baz_happened = true;
         }
     };
@@ -1496,7 +1496,7 @@ test "take address of temporary async frame" {
 
         fn foo(arg: i32) i32 {
             global_frame = @frame();
-            suspend;
+            suspend {}
             return arg + 1234;
         }
 
@@ -1519,7 +1519,7 @@ test "nosuspend await" {
 
         fn foo(want_suspend: bool) i32 {
             if (want_suspend) {
-                suspend;
+                suspend {}
             }
             return 42;
         }
