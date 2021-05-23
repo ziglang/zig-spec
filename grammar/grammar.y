@@ -3,6 +3,8 @@ Root <- skip container_doc_comment? ContainerMembers eof
 # *** Top level ***
 ContainerMembers <- ContainerDeclarations ContainerFieldList ContainerDeclarations
 
+EnumMembers <- ContainerDeclarations EnumFieldList ContainerDeclarations
+
 ContainerDeclarations
     <- TestDecl ContainerDeclarations
      / TopLevelComptime ContainerDeclarations
@@ -22,7 +24,9 @@ FnProto <- KEYWORD_fn IDENTIFIER? LPAREN ParamDeclList RPAREN ByteAlign? LinkSec
 
 VarDecl <- (KEYWORD_const / KEYWORD_var) IDENTIFIER (COLON TypeExpr)? ByteAlign? LinkSection? (EQUAL Expr)? SEMICOLON
 
-ContainerField <- doc_comment? KEYWORD_comptime? IDENTIFIER (COLON (KEYWORD_anytype / TypeExpr) ByteAlign?)? (EQUAL Expr)?
+ContainerField <- doc_comment? KEYWORD_comptime? IDENTIFIER COLON (KEYWORD_anytype / TypeExpr) ByteAlign? (EQUAL Expr)?
+
+EnumField <- doc_comment? IDENTIFIER (EQUAL Expr)?
 
 # *** Block Level ***
 Statement
@@ -307,12 +311,13 @@ PtrTypeStart
 ArrayTypeStart <- LBRACKET Expr (COLON Expr)? RBRACKET
 
 # ContainerDecl specific
-ContainerDeclAuto <- ContainerDeclType LBRACE container_doc_comment? ContainerMembers RBRACE
+ContainerDeclAuto
+    <- ContainerDeclType LBRACE container_doc_comment? ContainerMembers RBRACE
+     / KEYWORD_enum (LPAREN Expr RPAREN)? LBRACE container_doc_comment? EnumMembers RBRACE
 
 ContainerDeclType
     <- KEYWORD_struct
      / KEYWORD_opaque
-     / KEYWORD_enum (LPAREN Expr RPAREN)?
      / KEYWORD_union (LPAREN (KEYWORD_enum (LPAREN Expr RPAREN)? / Expr) RPAREN)?
 
 # Alignment
@@ -334,6 +339,8 @@ ParamDeclList <- (ParamDecl COMMA)* ParamDecl?
 ExprList <- (Expr COMMA)* Expr?
 
 ContainerFieldList <- (ContainerField COMMA)* ContainerField?
+
+EnumFieldList <- (EnumField COMMA)* EnumField?
 
 # *** Tokens ***
 eof <- !.
