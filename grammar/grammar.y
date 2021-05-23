@@ -3,6 +3,8 @@ Root <- skip container_doc_comment? ContainerMembers eof
 # *** Top level ***
 ContainerMembers <- ContainerDeclarations ContainerFieldList ContainerDeclarations
 
+TaggedUnionMembers <- ContainerDeclarations TaggedUnionFieldList ContainerDeclarations
+
 EnumMembers <- ContainerDeclarations EnumFieldList ContainerDeclarations
 
 ContainerDeclarations
@@ -25,6 +27,8 @@ FnProto <- KEYWORD_fn IDENTIFIER? LPAREN ParamDeclList RPAREN ByteAlign? LinkSec
 VarDecl <- (KEYWORD_const / KEYWORD_var) IDENTIFIER (COLON TypeExpr)? ByteAlign? LinkSection? (EQUAL Expr)? SEMICOLON
 
 ContainerField <- doc_comment? KEYWORD_comptime? IDENTIFIER COLON (KEYWORD_anytype / TypeExpr) ByteAlign? (EQUAL Expr)?
+
+TaggedUnionField <- doc_comment? KEYWORD_comptime? IDENTIFIER (COLON (KEYWORD_anytype / TypeExpr) ByteAlign?)? (EQUAL Expr)?
 
 EnumField <- doc_comment? IDENTIFIER (EQUAL Expr)?
 
@@ -312,13 +316,11 @@ ArrayTypeStart <- LBRACKET Expr (COLON Expr)? RBRACKET
 
 # ContainerDecl specific
 ContainerDeclAuto
-    <- ContainerDeclType LBRACE container_doc_comment? ContainerMembers RBRACE
+    <- KEYWORD_struct LBRACE container_doc_comment? ContainerMembers RBRACE
+     / KEYWORD_opaque LBRACE container_doc_comment? ContainerDeclarations RBRACE
+     / KEYWORD_union LPAREN (KEYWORD_enum (LPAREN Expr RPAREN)? / Expr) RPAREN LBRACE container_doc_comment? TaggedUnionMembers RBRACE
+     / KEYWORD_union LBRACE container_doc_comment? ContainerMembers RBRACE
      / KEYWORD_enum (LPAREN Expr RPAREN)? LBRACE container_doc_comment? EnumMembers RBRACE
-
-ContainerDeclType
-    <- KEYWORD_struct
-     / KEYWORD_opaque
-     / KEYWORD_union (LPAREN (KEYWORD_enum (LPAREN Expr RPAREN)? / Expr) RPAREN)?
 
 # Alignment
 ByteAlign <- KEYWORD_align LPAREN Expr RPAREN
@@ -339,6 +341,8 @@ ParamDeclList <- (ParamDecl COMMA)* ParamDecl?
 ExprList <- (Expr COMMA)* Expr?
 
 ContainerFieldList <- (ContainerField COMMA)* ContainerField?
+
+TaggedUnionFieldList <- (TaggedUnionField COMMA)* TaggedUnionField?
 
 EnumFieldList <- (EnumField COMMA)* EnumField?
 
