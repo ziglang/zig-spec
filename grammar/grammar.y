@@ -1,15 +1,15 @@
 Root <- skip container_doc_comment? StructMembers eof
 
 # *** Top level ***
-StructMembers <- ContainerDeclarations StructFieldList ContainerDeclarations
+StructMembers <- ContainerDeclarations (StructField COMMA)* (StructField / ContainerDeclarations)
 
-BareUnionMembers <- ContainerDeclarations BareUnionFieldList ContainerDeclarations
+BareUnionMembers <- ContainerDeclarations (BareUnionField COMMA)* (BareUnionField / ContainerDeclarations)
 
-InferredTagUnionMembers <- ContainerDeclarations InferredTagUnionFieldList ContainerDeclarations
+InferredTagUnionMembers <- ContainerDeclarations (InferredTagUnionField COMMA)* (InferredTagUnionField / ContainerDeclarations)
 
-ExplicitTagUnionMembers <- ContainerDeclarations ExplicitTagUnionFieldList ContainerDeclarations
+ExplicitTagUnionMembers <- ContainerDeclarations (ExplicitTagUnionField COMMA)* (ExplicitTagUnionField / ContainerDeclarations)
 
-EnumMembers <- ContainerDeclarations EnumFieldList ContainerDeclarations
+EnumMembers <- ContainerDeclarations (EnumField COMMA)* (EnumField / ContainerDeclarations)
 
 ContainerDeclarations
     <- TestDecl ContainerDeclarations
@@ -348,16 +348,6 @@ StringList <- (STRINGLITERAL COMMA)* STRINGLITERAL?
 ParamDeclList <- (ParamDecl COMMA)* ParamDecl?
 
 ExprList <- (Expr COMMA)* Expr?
-
-StructFieldList <- (StructField COMMA)* StructField?
-
-BareUnionFieldList <- (BareUnionField COMMA)* BareUnionField?
-
-InferredTagUnionFieldList <- (InferredTagUnionField COMMA)* InferredTagUnionField?
-
-ExplicitTagUnionFieldList <- (ExplicitTagUnionField COMMA)* ExplicitTagUnionField?
-
-EnumFieldList <- (EnumField COMMA)* EnumField?
 
 # *** Tokens ***
 eof <- !.
