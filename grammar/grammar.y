@@ -412,8 +412,8 @@ CHAR_LITERAL <- "'" char_char "'" skip
 FLOAT
     <- "0x" hex_int "." hex_int ([pP] [-+]? dec_int)? skip
      /      dec_int "." dec_int ([eE] [-+]? dec_int)? skip
-     / "0x" hex_int "."? [pP] [-+]? dec_int skip
-     /      dec_int "."? [eE] [-+]? dec_int skip
+     / "0x" hex_int [pP] [-+]? dec_int skip
+     /      dec_int [eE] [-+]? dec_int skip
 INTEGER
     <- "0b" bin_int skip
      / "0o" oct_int skip
