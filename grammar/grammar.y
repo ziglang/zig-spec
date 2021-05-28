@@ -164,7 +164,7 @@ WhileTypeExpr <- WhilePrefix TypeExpr (KEYWORD_else Payload? TypeExpr)?
 SwitchExpr <- KEYWORD_switch LPAREN Expr RPAREN LBRACE SwitchProngList RBRACE
 
 # *** Assembly ***
-AsmExpr <- KEYWORD_asm KEYWORD_volatile? LPAREN STRINGLITERAL AsmOutput? RPAREN
+AsmExpr <- KEYWORD_asm KEYWORD_volatile? LPAREN Expr AsmOutput? RPAREN
 
 AsmOutput <- COLON AsmOutputList AsmInput?
 
@@ -190,11 +190,12 @@ LinkSection <- KEYWORD_linksection LPAREN Expr RPAREN
 # Fn specific
 CallConv <- KEYWORD_callconv LPAREN Expr RPAREN
 
-ParamDecl <- doc_comment? (KEYWORD_noalias / KEYWORD_comptime)? (IDENTIFIER COLON)? ParamType
+ParamDecl
+    <- doc_comment? (KEYWORD_noalias / KEYWORD_comptime)? (IDENTIFIER COLON)? ParamType
+     / DOT3
 
 ParamType
     <- KEYWORD_anytype
-     / DOT3
      / TypeExpr
 
 # Control flow prefixes
