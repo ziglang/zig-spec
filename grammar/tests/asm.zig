@@ -92,3 +92,8 @@ extern fn this_is_my_alias() i32;
 export fn derp() i32 {
     return 1234;
 }
+
+test "template expr" {
+    asm (if (true) "nop" else "");
+    asm (if (true) "nop" else "" :::);
+}
