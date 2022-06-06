@@ -11,7 +11,7 @@ ContainerDeclarations
 
 TestDecl <- doc_comment? KEYWORD_test STRINGLITERALSINGLE? Block
 
-TopLevelComptime <- doc_comment? KEYWORD_comptime BlockExpr
+TopLevelComptime <- doc_comment? KEYWORD_comptime Block
 
 TopLevelDecl
     <- (KEYWORD_export / KEYWORD_extern STRINGLITERALSINGLE? / (KEYWORD_inline / KEYWORD_noinline))? FnProto (SEMICOLON / Block)
