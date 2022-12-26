@@ -20,11 +20,14 @@ ANY_FAILURE=
 for FILE in "${FILES[@]}"; do
 	$ZIG fmt --stdin < "$FILE" > /dev/null 2>&1
 	zigret=$?
-	./build/parser < "$FILE" > /dev/null 2>&1
+	error=$(./build/parser < "$FILE" 2>&1)
 	parserret=$?
 
 	if [ "$zigret" -ne "$parserret" ]; then
 		echo "FAIL: ${FILE}: zig: $zigret, grammar: $parserret"
+		if [ "$parserret" -eq 1 ]; then
+		    echo "$error"
+		fi
 		ANY_FAILURE=1
 	fi
 done
