@@ -1,4 +1,5 @@
 //! This is a container doc comment
+// This is a comment between the container doc comments
 //! That spans multiple lines
 
 const MyStruct = struct {
@@ -11,6 +12,8 @@ const MyStruct = struct {
     b: i32,
 
     /// And one more field
+    // A regular comment
+    /// Followed by another doc comment
     c: f32,
 };
 
@@ -44,15 +47,6 @@ pub fn add(
         c: f64,
     };
     return a + b;
-}
-
-/// This is a comptime block. Doc comments are allowed here by the parser but will be elided by zig fmt
-comptime {
-    const foo = add(40, 2);
-}
-
-/// This is a doc comment for a test
-test "This is my test" {
 }
 
 /// foo is a a number
