@@ -337,3 +337,5 @@ test "indexing array with sentinel returns correct type" {
     var s: [:0]const u8 = "abc";
     testing.expectEqualSlices(u8, "*const u8", @typeName(@TypeOf(&s[0])));
 }
+
+const a = *align(a:b:c) u8;
