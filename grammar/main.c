@@ -18,19 +18,34 @@ void yyerror(yycontext* ctx, char* message) {
     fprintf(stderr, "%s:%d: %s", filename, lineno, message);
 
     if (ctx->__pos < ctx->__limit || !feof(input)) {
-        // Find the offending line.
+        // Find the start of the offending line.
+        int start;
         int pos = ctx->__limit;
         while (ctx->__pos < pos) {
-	        if (ctx->__buf[pos] == '\n') {
-	            ++pos;
-	            break;
-	        }
+            if (ctx->__buf[pos] == '\n') {
+                ++pos;
+                break;
+            }
 
-	        --pos;
+            --pos;
         }
 
+        start = pos;
         ctx->__buf[ctx->__limit] = '\0';
-        fprintf(stderr, "%s", ctx->__buf + pos);
+        while (pos < ctx->__limit) {
+            if (ctx->__buf[pos] == '\n') break;
+            fputc(ctx->__buf[pos], stderr);
+            pos += 1;
+        }
+        if (pos == ctx->__limit) {
+            // Not enough bytes from the buffer to complete a line.
+            int c = fgetc(input);
+            while (c != EOF && c != '\n') {
+                fputc(c, stderr);
+                c = fgetc(input);
+            }
+        }
+        fprintf(stderr, "\n%*c", ctx->__limit - start, '^');
     }
 
     fprintf(stderr, "\n");
