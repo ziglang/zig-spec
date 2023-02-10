@@ -432,7 +432,7 @@ STRINGLITERAL
      / (line_string                 skip)+
 IDENTIFIER
     <- !keyword [A-Za-z_] [A-Za-z0-9_]* skip
-     / "@\"" string_char* "\""                            skip
+     / "@" STRINGLITERALSINGLE
 BUILTINIDENTIFIER <- "@"[A-Za-z_][A-Za-z0-9_]* skip
 
 
