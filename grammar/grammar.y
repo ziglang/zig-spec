@@ -161,6 +161,8 @@ WhileTypeExpr <- WhilePrefix TypeExpr (KEYWORD_else Payload? TypeExpr)?
 
 SwitchExpr <- KEYWORD_switch LPAREN Expr RPAREN LBRACE SwitchProngList RBRACE
 
+RangeExpr <- Expr DOT2 Expr?
+
 # *** Assembly ***
 AsmExpr <- KEYWORD_asm KEYWORD_volatile? LPAREN Expr AsmOutput? RPAREN
 
@@ -203,7 +205,7 @@ IfPrefix <- KEYWORD_if LPAREN Expr RPAREN PtrPayload?
 
 WhilePrefix <- KEYWORD_while LPAREN Expr RPAREN PtrPayload? WhileContinueExpr?
 
-ForPrefix <- KEYWORD_for LPAREN Expr RPAREN PtrIndexPayload
+ForPrefix <- KEYWORD_for LPAREN ForArgumentsList RPAREN PtrListPayload
 
 # Payloads
 Payload <- PIPE IDENTIFIER PIPE
@@ -212,6 +214,7 @@ PtrPayload <- PIPE ASTERISK? IDENTIFIER PIPE
 
 PtrIndexPayload <- PIPE ASTERISK? IDENTIFIER (COMMA IDENTIFIER)? PIPE
 
+PtrListPayload <- PIPE (ASTERISK? IDENTIFIER COMMA)* ASTERISK? IDENTIFIER PIPE
 
 # Switch specific
 SwitchProng <- KEYWORD_inline? SwitchCase EQUALRARROW PtrIndexPayload? AssignExpr
@@ -339,6 +342,8 @@ AsmInputList <- (AsmInputItem COMMA)* AsmInputItem?
 StringList <- (STRINGLITERAL COMMA)* STRINGLITERAL?
 
 ParamDeclList <- (ParamDecl COMMA)* ParamDecl?
+
+ForArgumentsList <- ((RangeExpr / Expr) COMMA)* (RangeExpr / Expr)
 
 ExprList <- (Expr COMMA)* Expr?
 
