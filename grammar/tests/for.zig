@@ -67,10 +67,14 @@ test "basic for loop" {
         buf_index += 1;
     }
 
+    for (
+        0..10, //test trailing comma
+    ) |_| {}
+
     var arr_1 = [_]u16{ 1, 2, 3 };
     var arr_2 = [_]u16{ 3, 2, 1 };
     var acc: usize = 0;
-    for (arr_1, arr_2, 0..) |a, b, c| {
+    for (arr_1, arr_2, 0..) |a, b, c| { //testing multivariable for loops
         try expectEqual(@as(usize, 4 + acc), a + b + c);
         acc += 1;
     }

@@ -161,8 +161,6 @@ WhileTypeExpr <- WhilePrefix TypeExpr (KEYWORD_else Payload? TypeExpr)?
 
 SwitchExpr <- KEYWORD_switch LPAREN Expr RPAREN LBRACE SwitchProngList RBRACE
 
-RangeExpr <- Expr DOT2 Expr?
-
 # *** Assembly ***
 AsmExpr <- KEYWORD_asm KEYWORD_volatile? LPAREN Expr AsmOutput? RPAREN
 
@@ -224,6 +222,11 @@ SwitchCase
      / KEYWORD_else
 
 SwitchItem <- Expr (DOT3 Expr)?
+
+# For specific
+ForArgumentsList <- ForItem+
+
+ForItem <- Expr (DOT2 Expr?)? COMMA?
 
 # Operators
 AssignOp
@@ -342,8 +345,6 @@ AsmInputList <- (AsmInputItem COMMA)* AsmInputItem?
 StringList <- (STRINGLITERAL COMMA)* STRINGLITERAL?
 
 ParamDeclList <- (ParamDecl COMMA)* ParamDecl?
-
-ForArgumentsList <- ((RangeExpr / Expr) COMMA)* (RangeExpr / Expr)
 
 ExprList <- (Expr COMMA)* Expr?
 
