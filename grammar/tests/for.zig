@@ -4,13 +4,7 @@ const expectEqual = std.testing.expectEqual;
 const mem = std.mem;
 
 test "continue in for loop" {
-    const array = [_]i32{
-        1,
-        2,
-        3,
-        4,
-        5,
-    };
+    const array = [_]i32{ 1, 2, 3, 4, 5 };
     var sum: i32 = 0;
     for (array) |x| {
         sum += x;
@@ -27,12 +21,10 @@ test "for loop with pointer elem var" {
     var target: [source.len]u8 = undefined;
     mem.copy(u8, target[0..], source);
     mangleString(target[0..]);
-    expect(mem.eql(u8, &target, "bcdefgh"));
+    try expect(mem.eql(u8, &target, "bcdefgh"));
 
-    for (source) |*c, i|
-        expect(@TypeOf(c) == *const u8);
-    for (target) |*c, i|
-        expect(@TypeOf(c) == *u8);
+    for (&target) |*c|
+        try expect(@TypeOf(c) == *u8);
 }
 
 fn mangleString(s: []u8) void {
@@ -52,7 +44,7 @@ test "basic for loop" {
         buffer[buf_index] = item;
         buf_index += 1;
     }
-    for (array) |item, index| {
+    for (array, 0..) |_, index| {
         buffer[buf_index] = @intCast(u8, index);
         buf_index += 1;
     }
@@ -61,7 +53,7 @@ test "basic for loop" {
         buffer[buf_index] = item;
         buf_index += 1;
     }
-    for (array_ptr) |item, index| {
+    for (array_ptr, 0..) |_, index| {
         buffer[buf_index] = @intCast(u8, index);
         buf_index += 1;
     }
@@ -70,20 +62,32 @@ test "basic for loop" {
         buffer[buf_index] = item;
         buf_index += 1;
     }
-    for (unknown_size) |item, index| {
+    for (unknown_size, 0..) |_, index| {
         buffer[buf_index] = @intCast(u8, index);
         buf_index += 1;
     }
 
-    expect(mem.eql(u8, buffer[0..buf_index], &expected_result));
+
+    for ( 0..,) |_,| {} //test trailing comma
+    for (0..10, 1.., 2..,)|_, _, _,|{} //test trailing comma in both args and params
+
+    var arr_1 = [_]u16{ 1, 2, 3 };
+    var arr_2 = [_]u16{ 3, 2, 1 };
+    var acc: usize = 0;
+    for (arr_1, arr_2, 0..) |a, b, c| { //testing multivariable for loops
+        try expectEqual(@as(usize, 4 + acc), a + b + c);
+        acc += 1;
+    }
+
+    try expect(mem.eql(u8, buffer[0..buf_index], &expected_result));
 }
 
 test "break from outer for loop" {
-    testBreakOuter();
-    comptime testBreakOuter();
+    try testBreakOuter();
+    comptime try testBreakOuter();
 }
 
-fn testBreakOuter() void {
+fn testBreakOuter() !void {
     var array = "aoeu";
     var count: usize = 0;
     outer: for (array) |_| {
@@ -92,15 +96,15 @@ fn testBreakOuter() void {
             break :outer;
         }
     }
-    expect(count == 1);
+    try expect(count == 1);
 }
 
 test "continue outer for loop" {
-    testContinueOuter();
-    comptime testContinueOuter();
+    try testContinueOuter();
+    comptime try testContinueOuter();
 }
 
-fn testContinueOuter() void {
+fn testContinueOuter() !void {
     var array = "aoeu";
     var counter: usize = 0;
     outer: for (array) |_| {
@@ -109,23 +113,23 @@ fn testContinueOuter() void {
             continue :outer;
         }
     }
-    expect(counter == array.len);
+    try expect(counter == array.len);
 }
 
 test "2 break statements and an else" {
     const S = struct {
-        fn entry(t: bool, f: bool) void {
+        fn entry(t: bool, f: bool) !void {
             var buf: [10]u8 = undefined;
             var ok = false;
-            ok = for (buf) |item| {
+            ok = for (buf) |_| {
                 if (f) break false;
                 if (t) break true;
             } else false;
-            expect(ok);
+            try expect(ok);
         }
     };
-    S.entry(true, false);
-    comptime S.entry(true, false);
+    try S.entry(true, false);
+    comptime try S.entry(true, false);
 }
 
 test "for with null and T peer types and inferred result location type" {
@@ -135,7 +139,7 @@ test "for with null and T peer types and inferred result location type" {
                 if (item == 10) {
                     break item;
                 }
-            } else null) |v| {
+            } else null) |_| {
                 @panic("fail");
             }
         }
@@ -146,27 +150,27 @@ test "for with null and T peer types and inferred result location type" {
 
 test "for copies its payload" {
     const S = struct {
-        fn doTheTest() void {
+        fn doTheTest() !void {
             var x = [_]usize{ 1, 2, 3 };
-            for (x) |value, i| {
+            for (x, 0..) |value, i| {
                 // Modify the original array
                 x[i] += 99;
-                expectEqual(value, i + 1);
+                try expectEqual(value, i + 1);
             }
         }
     };
-    S.doTheTest();
-    comptime S.doTheTest();
+    try S.doTheTest();
+    comptime try S.doTheTest();
 }
 
 test "for on slice with allowzero ptr" {
     const S = struct {
-        fn doTheTest(slice: []const u8) void {
+        fn doTheTest(slice: []const u8) !void {
             var ptr = @ptrCast([*]allowzero const u8, slice.ptr)[0..slice.len];
-            for (ptr) |x, i| expect(x == i + 1);
-            for (ptr) |*x, i| expect(x.* == i + 1);
+            for (ptr, 0..) |x, i| try expect(x == i + 1);
+            for (ptr, 0..) |*x, i| try expect(x.* == i + 1);
         }
     };
-    S.doTheTest(&[_]u8{ 1, 2, 3, 4 });
-    comptime S.doTheTest(&[_]u8{ 1, 2, 3, 4 });
+    try S.doTheTest(&[_]u8{ 1, 2, 3, 4 });
+    comptime try S.doTheTest(&[_]u8{ 1, 2, 3, 4 });
 }

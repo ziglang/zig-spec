@@ -203,7 +203,7 @@ IfPrefix <- KEYWORD_if LPAREN Expr RPAREN PtrPayload?
 
 WhilePrefix <- KEYWORD_while LPAREN Expr RPAREN PtrPayload? WhileContinueExpr?
 
-ForPrefix <- KEYWORD_for LPAREN Expr RPAREN PtrIndexPayload
+ForPrefix <- KEYWORD_for LPAREN ForArgumentsList RPAREN PtrListPayload
 
 # Payloads
 Payload <- PIPE IDENTIFIER PIPE
@@ -212,6 +212,7 @@ PtrPayload <- PIPE ASTERISK? IDENTIFIER PIPE
 
 PtrIndexPayload <- PIPE ASTERISK? IDENTIFIER (COMMA IDENTIFIER)? PIPE
 
+PtrListPayload <- PIPE ASTERISK? IDENTIFIER (COMMA ASTERISK? IDENTIFIER)* COMMA? PIPE
 
 # Switch specific
 SwitchProng <- KEYWORD_inline? SwitchCase EQUALRARROW PtrIndexPayload? AssignExpr
@@ -221,6 +222,11 @@ SwitchCase
      / KEYWORD_else
 
 SwitchItem <- Expr (DOT3 Expr)?
+
+# For specific
+ForArgumentsList <- ForItem (COMMA ForItem)* COMMA?
+
+ForItem <- Expr (DOT2 Expr?)?
 
 # Operators
 AssignOp
