@@ -212,7 +212,7 @@ PtrPayload <- PIPE ASTERISK? IDENTIFIER PIPE
 
 PtrIndexPayload <- PIPE ASTERISK? IDENTIFIER (COMMA IDENTIFIER)? PIPE
 
-PtrListPayload <- PIPE (ASTERISK? IDENTIFIER COMMA)* ASTERISK? IDENTIFIER PIPE
+PtrListPayload <- PIPE ASTERISK? IDENTIFIER (COMMA ASTERISK? IDENTIFIER)* COMMA? PIPE
 
 # Switch specific
 SwitchProng <- KEYWORD_inline? SwitchCase EQUALRARROW PtrIndexPayload? AssignExpr
@@ -224,9 +224,9 @@ SwitchCase
 SwitchItem <- Expr (DOT3 Expr)?
 
 # For specific
-ForArgumentsList <- ForItem+
+ForArgumentsList <- ForItem (COMMA ForItem)* COMMA?
 
-ForItem <- Expr (DOT2 Expr?)? COMMA?
+ForItem <- Expr (DOT2 Expr?)?
 
 # Operators
 AssignOp

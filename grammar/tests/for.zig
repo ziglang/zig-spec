@@ -67,9 +67,9 @@ test "basic for loop" {
         buf_index += 1;
     }
 
-    for (
-        0..10, //test trailing comma
-    ) |_| {}
+
+    for ( 0..,) |_,| {} //test trailing comma
+    for (0..10, 1.., 2..,)|_, _, _,|{} //test trailing comma in both args and params
 
     var arr_1 = [_]u16{ 1, 2, 3 };
     var arr_2 = [_]u16{ 3, 2, 1 };
