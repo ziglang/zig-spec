@@ -15,12 +15,14 @@ ComptimeDecl <- KEYWORD_comptime Block
 
 Decl
     <- (KEYWORD_export / KEYWORD_extern STRINGLITERALSINGLE? / (KEYWORD_inline / KEYWORD_noinline))? FnProto (SEMICOLON / Block)
-     / (KEYWORD_export / KEYWORD_extern STRINGLITERALSINGLE?)? KEYWORD_threadlocal? VarDecl
+     / (KEYWORD_export / KEYWORD_extern STRINGLITERALSINGLE?)? KEYWORD_threadlocal? GlobalVarDecl
      / KEYWORD_usingnamespace Expr SEMICOLON
 
 FnProto <- KEYWORD_fn IDENTIFIER? LPAREN ParamDeclList RPAREN ByteAlign? AddrSpace? LinkSection? CallConv? EXCLAMATIONMARK? TypeExpr
 
-VarDecl <- (KEYWORD_const / KEYWORD_var) IDENTIFIER (COLON TypeExpr)? ByteAlign? AddrSpace? LinkSection? (EQUAL Expr)? SEMICOLON
+VarDeclProto <- (KEYWORD_const / KEYWORD_var) IDENTIFIER (COLON TypeExpr)? ByteAlign? AddrSpace? LinkSection?
+
+GlobalVarDecl <- VarDeclProto (EQUAL Expr)? SEMICOLON
 
 ContainerField
     <- doc_comment? KEYWORD_comptime? IDENTIFIER (COLON TypeExpr)? ByteAlign? (EQUAL Expr)?
@@ -28,8 +30,7 @@ ContainerField
 
 # *** Block Level ***
 Statement
-    <- KEYWORD_comptime? VarDecl
-     / KEYWORD_comptime BlockExprStatement
+    <- KEYWORD_comptime ComptimeStatement
      / KEYWORD_nosuspend BlockExprStatement
      / KEYWORD_suspend BlockExprStatement
      / KEYWORD_defer BlockExprStatement
@@ -37,7 +38,11 @@ Statement
      / IfStatement
      / LabeledStatement
      / SwitchExpr
-     / AssignExpr SEMICOLON
+     / VarDeclExprStatement
+
+ComptimeStatement
+    <- BlockExpr
+     / VarDeclExprStatement
 
 IfStatement
     <- IfPrefix BlockExpr ( KEYWORD_else Payload? Statement )?
@@ -61,8 +66,17 @@ BlockExprStatement
 
 BlockExpr <- BlockLabel? Block
 
+# An expression, assignment, or any destructure, as a statement.
+VarDeclExprStatement
+    <- VarDeclProto (COMMA (VarDeclProto / Expr))* EQUAL Expr SEMICOLON
+     / Expr (AssignOp Expr / (COMMA (VarDeclProto / Expr))+ EQUAL Expr)? SEMICOLON
+
 # *** Expression Level ***
-AssignExpr <- Expr (AssignOp Expr)?
+
+# An assignment or a destructure whose LHS are all lvalue expressions.
+AssignExpr <- Expr (AssignOp Expr / (COMMA Expr)+ EQUAL Expr)?
+
+SingleAssignExpr <- Expr (AssignOp Expr)?
 
 Expr <- BoolOrExpr
 
@@ -215,7 +229,7 @@ PtrIndexPayload <- PIPE ASTERISK? IDENTIFIER (COMMA IDENTIFIER)? PIPE
 PtrListPayload <- PIPE ASTERISK? IDENTIFIER (COMMA ASTERISK? IDENTIFIER)* COMMA? PIPE
 
 # Switch specific
-SwitchProng <- KEYWORD_inline? SwitchCase EQUALRARROW PtrIndexPayload? AssignExpr
+SwitchProng <- KEYWORD_inline? SwitchCase EQUALRARROW PtrIndexPayload? SingleAssignExpr
 
 SwitchCase
     <- SwitchItem (COMMA SwitchItem)* COMMA?
