@@ -23,6 +23,10 @@ for FILE in "${FILES[@]}"; do
 	error=$(./build/parser < "$FILE" 2>&1)
 	parserret=$?
 
+	if [ "$zigret" -ne "0" ]; then
+		zigret=1
+	fi
+
 	if [ "$zigret" -ne "$parserret" ]; then
 		echo "FAIL: ${FILE}: zig: $zigret, grammar: $parserret"
 		if [ "$parserret" -eq 1 ]; then
