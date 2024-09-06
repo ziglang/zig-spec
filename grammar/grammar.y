@@ -408,7 +408,9 @@ mb_utf8_literal <-
      / oxE0      oxA0_oxBF ox80_oxBF
      / oxC2_oxDF ox80_oxBF
 
-ascii_char_not_nl_slash_squote <- [\000-\011\013-\046\050-\133\135-\177]
+# NOTE: `\135` is `]`. We separate to avoid this: [\000-\011\013-\046\050-\133]-\177]
+#                                                 ^                           ^XXXXXX
+ascii_char_not_nl_slash_squote <- [\000-\011\013-\046\050-\133\136-\177] / ']'
 
 char_escape
     <- "\\x" hex hex
@@ -426,28 +428,28 @@ string_char
 container_doc_comment <- ('//!' [^\n]* [ \n]* skip)+
 doc_comment <- ('///' [^\n]* [ \n]* skip)+
 line_comment <- '//' ![!/][^\n]* / '////' [^\n]*
-line_string <- ("\\\\" [^\n]* [ \n]*)+
+line_string <- ('\\\\' [^\n]* [ \n]*)+
 skip <- ([ \n] / line_comment)*
 
-CHAR_LITERAL <- "'" char_char "'" skip
+CHAR_LITERAL <- ['] char_char ['] skip
 FLOAT
-    <- "0x" hex_int "." hex_int ([pP] [-+]? dec_int)? skip
-     /      dec_int "." dec_int ([eE] [-+]? dec_int)? skip
-     / "0x" hex_int [pP] [-+]? dec_int skip
+    <- '0x' hex_int '.' hex_int ([pP] [-+]? dec_int)? skip
+     /      dec_int '.' dec_int ([eE] [-+]? dec_int)? skip
+     / '0x' hex_int [pP] [-+]? dec_int skip
      /      dec_int [eE] [-+]? dec_int skip
 INTEGER
-    <- "0b" bin_int skip
-     / "0o" oct_int skip
-     / "0x" hex_int skip
+    <- '0b' bin_int skip
+     / '0o' oct_int skip
+     / '0x' hex_int skip
      /      dec_int   skip
-STRINGLITERALSINGLE <- "\"" string_char* "\"" skip
+STRINGLITERALSINGLE <- ["] string_char* ["] skip
 STRINGLITERAL
     <- STRINGLITERALSINGLE
      / (line_string                 skip)+
 IDENTIFIER
     <- !keyword [A-Za-z_] [A-Za-z0-9_]* skip
-     / "@" STRINGLITERALSINGLE
-BUILTINIDENTIFIER <- "@"[A-Za-z_][A-Za-z0-9_]* skip
+     / '@' STRINGLITERALSINGLE
+BUILTINIDENTIFIER <- '@'[A-Za-z_][A-Za-z0-9_]* skip
 
 
 AMPERSAND            <- '&'      ![=]      skip
