@@ -37,3 +37,4 @@ test "float widening f16 to f128" {
     var y: f128 = x;
     expect(x == y);
 }
+
