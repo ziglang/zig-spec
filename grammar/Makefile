@@ -7,7 +7,7 @@ clean:
 build:
 	mkdir build
 
-build/parser.c: grammar.y | build
+build/parser.c: grammar.peg | build
 	peg $^ > $@
 
 build/parser: main.c | build/parser.c
