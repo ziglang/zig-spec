@@ -281,4 +281,3 @@ test "while copies its payload" {
     S.doTheTest();
     comptime S.doTheTest();
 }
-
