@@ -1,4 +1,7 @@
 .PHONY: all clean
+
+CFLAGS = -O3 -march=native -pipe
+
 all: build/parser build/parser_debug
 
 clean:
@@ -11,7 +14,7 @@ build/parser.c: grammar.peg | build
 	peg $^ > $@
 
 build/parser: main.c | build/parser.c
-	$(CC) -O3 -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^
 
 build/parser_debug: main.c
-	$(CC) -O3 -o $@ $^ -DYY_DEBUG
+	$(CC) $(CFLAGS) -o $@ $^ -DYY_DEBUG
