@@ -96,7 +96,7 @@ PrimaryExpr
      / KEYWORD_break BreakLabel? Expr?
      / KEYWORD_comptime Expr
      / KEYWORD_nosuspend Expr
-     / KEYWORD_continue BreakLabel?
+     / KEYWORD_continue BreakLabel? Expr?
      / KEYWORD_resume Expr
      / KEYWORD_return Expr?
      / BlockLabel? LoopExpr
