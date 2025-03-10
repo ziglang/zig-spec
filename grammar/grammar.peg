@@ -31,7 +31,7 @@ Statement
      / KEYWORD_errdefer Payload? BlockExprStatement
      / IfStatement
      / LabeledStatement
-     / SwitchExpr
+     / BlockLabel? SwitchExpr
      / VarDeclExprStatement
 
 ComptimeStatement
@@ -100,6 +100,7 @@ PrimaryExpr
      / KEYWORD_resume Expr
      / KEYWORD_return Expr?
      / BlockLabel? LoopExpr
+     / BlockLabel SwitchExpr
      / Block
      / CurlySuffixExpr
 
