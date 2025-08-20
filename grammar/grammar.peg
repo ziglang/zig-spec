@@ -393,7 +393,7 @@ oxC2_oxDF <- [\302-\337]
 # [0xF1,0xF3]     [0x80,0xBF]     [0x80,0xBF]     [0x80,0xBF]
 #    0xF4         [0x80,0x8F]     [0x80,0xBF]     [0x80,0xBF]
 
-mb_utf8_literal <-
+multibyte_utf8 <-
        oxF4      ox80_ox8F ox80_oxBF ox80_oxBF
      / oxF1_oxF3 ox80_oxBF ox80_oxBF ox80_oxBF
      / oxF0      ox90_0xBF ox80_oxBF ox80_oxBF
@@ -403,22 +403,21 @@ mb_utf8_literal <-
      / oxE0      oxA0_oxBF ox80_oxBF
      / oxC2_oxDF ox80_oxBF
 
-# NOTE: `\135` is `]`. We separate to avoid this: [\000-\011\013-\046\050-\133]-\177]
-#                                                 ^                           ^XXXXXX
-ascii_char_not_nl_slash_squote <- [\000-\011\013-\046\050-\133\136-\177] / ']'
+non_control_ascii <- [\040-\176]
 
 char_escape
     <- "\\x" hex hex
      / "\\u{" hex+ "}"
      / "\\" [nr\\t'"]
 char_char
-    <- mb_utf8_literal
+    <- multibyte_utf8
      / char_escape
-     / ascii_char_not_nl_slash_squote
+     / ![\\'\n] non_control_ascii
 
 string_char
-    <- char_escape
-     / [^\\"\n]
+    <- multibyte_utf8
+     / char_escape
+     / ![\\"\n] non_control_ascii
 
 container_doc_comment <- ('//!' [^\n]* [ \n]* skip)+
 doc_comment <- ('///' [^\n]* [ \n]* skip)+

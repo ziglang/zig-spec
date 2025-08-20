@@ -91,4 +91,3 @@ const c123 = '{';
 const c124 = '|';
 const c125 = '}';
 const c126 = '~';
-const c127 = '';
